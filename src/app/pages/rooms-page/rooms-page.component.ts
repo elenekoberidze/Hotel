@@ -34,4 +34,49 @@ export class RoomsPageComponent {
     })
    }
 
+
+   
+   filteredRooms = [...this.roomTypes];
+  priceRange = 500;
+  checkInDate: string | null = null;
+  checkOutDate: string | null = null;
+
+  
+
+  ngOnInit(): void {}
+
+  onPriceChange(value: number): void {
+    this.priceRange = value;
+    this.filterRooms();
+  }
+
+  onCheckInChange(date: string): void {
+    this.checkInDate = date;
+    this.filterRooms();
+  }
+
+  onCheckOutChange(date: string): void {
+    this.checkOutDate = date;
+    this.filterRooms();
+  }
+
+  resetFilters(): void {
+    this.priceRange = 500;
+    this.checkInDate = null;
+    this.checkOutDate = null;
+    this.filteredRooms = [...this.roomTypes];
+  }
+
+  filterRooms(): void {
+    this.filteredRooms = this.roomTypes.filter(room => {
+      const priceMatch = room.price <= this.priceRange;
+      return priceMatch;
+    });
+  }
+
+  viewDetails(room: any): void {
+    
+    alert(`Viewing details for ${room.name}`);
+  }
+
 }
