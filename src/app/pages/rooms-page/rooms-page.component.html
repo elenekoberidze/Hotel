@@ -23,20 +23,20 @@
       <div class="filters">
         <div class="filter-group">
           <label for="room-type">Room Type:</label>
-          <select id="room-type">
-            <option *ngFor="let room of roomTypes">{{room.name}}</option>
+          <select id="room-type" >
+            <option *ngFor="let room of roomTypes" >{{room.name}}</option>
           </select>
         </div>
   
         <div class="filter-group">
           <label for="price-range">Price Range:</label>
-          <input type="range" id="price-range" min="0" max="1000" value="500">
-          <span id="priceValue">500$</span>
+          <input type="range" id="price-range" [(ngModel)]="priceRange" min="0" max="1000" value="500" (input)="onPriceChange()">
+          <span id="priceValue" >{{priceRange}}</span>
         </div>
   
-        <div class="filter-group">
-          <label for="check-in">Check-in Date:</label>
-          <input type="date" id="check-in">
+        <div class="filter-group" >
+          <label for="check-in" >Check-in Date:</label>
+          <input type="date" id="check-in" >
         </div>
   
         <div class="filter-group">
@@ -51,21 +51,21 @@
   
      
       <div class="room-cards">
+        <div class="room-card" >
+          <img src="" >
+          <h3>Room</h3>
+          <p class="price">$/night</p>
+          <button >View Details</button>
+        </div>
         <div class="room-card">
-          <img src="" alt="Single Room">
-          <h3>Single Room</h3>
+          <img src="">
+          <h3>Room</h3>
           <p class="price">$/night</p>
           <button>View Details</button>
         </div>
         <div class="room-card">
-          <img src="" alt="Double Room">
-          <h3>Double Room</h3>
-          <p class="price">$/night</p>
-          <button>View Details</button>
-        </div>
-        <div class="room-card">
-          <img src="" alt="Deluxe Room">
-          <h3>Deluxe Room</h3>
+          <img src="" >
+          <h3>Room</h3>
           <p class="price">$/night</p>
           <button>View Details</button>
         </div>
