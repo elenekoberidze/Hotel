@@ -1,0 +1,101 @@
+<body>
+    
+
+
+<header>
+    <div class="logo">
+        <h1>Hotel Booking</h1>
+    </div>
+    <nav>
+        <ul>
+            <li><a routerLink="/home">Home</a></li>
+            <li><a routerLink="/hotels">Hotels</a></li>
+            <li><a routerLink="/rooms">Rooms</a></li>
+            <li><a routerLink="/booked-rooms">Booked Rooms</a></li>
+        </ul>
+    </nav>
+</header>
+<section class="booked-rooms">
+    <div class="container">
+      <h1>My Booked Rooms</h1>
+      <p>View all your bookings and manage your reservations with ease</p>
+  
+      
+      <div class="filter">
+        <label for="city-filter">Filter by City:</label>
+        <select id="city-filter">
+          <option value="tbilisi">{{city}}</option>
+        </select>
+      </div>
+  
+     
+      <table class="booked-rooms-table">
+        <thead>
+            <tr>
+                <th>Hotel</th>
+                <th>Room</th>
+                <th>User</th>
+                <th>Status</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Total Price</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <img src="" alt="Hotel Image">
+                    <span> Hotel</span>
+                    <span class="city">Tbilisi</span>
+                </td>
+                <td>
+                    <img src="" alt="Room Image">
+                    <span>Room</span>
+                    <span class="price">price</span>
+                </td>
+                <td>
+                    <span>name</span>
+                    <span class="phone">phonenumber</span>
+                </td>
+                <td class="status">Confirmed</td>
+                <td>randomdate</td>
+                <td>randomdate</td>
+                <td>$</td>
+                <td><button class="cancel-booking">Cancel</button></td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="" alt="Hotel Image">
+                    <span> Hotel</span>
+                    <span class="city">tbilisi</span>
+                </td>
+                <td>
+                    <img src="" alt="Room Image">
+                    <span>Room</span>
+                    <span class="price">$</span>
+                </td>
+                <td>
+                    <span>name</span>
+                    <span class="phone">phonenumber</span>
+                </td>
+                <td class="status">Confirmed</td>
+                <td>randomdate</td>
+                <td>randomdate</td>
+                <td>$</td>
+                <td><button class="cancel-booking">Cancel</button></td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Hotel Booking. All rights reserved.</p>
+        </div>
+      </footer>
+
+  </section>
+</body>
+  
+  
+  
