@@ -24,7 +24,7 @@
         <div class="filter-group">
           <label for="room-type">Room Type:</label>
           <select id="room-type" >
-            <option *ngFor="let room of roomTypes" >{{room.name}}</option>
+            <option *ngFor="let room of roomTypes" [value]="room.id" >{{room.name}}</option>
           </select>
         </div>
   
@@ -36,39 +36,28 @@
   
         <div class="filter-group" >
           <label for="check-in" >Check-in Date:</label>
-          <input type="date" id="check-in" >
+          <input type="date" id="check-in" [(ngModel)]="checkInDate" (change)="onDateChange()">
         </div>
   
         <div class="filter-group">
           <label for="check-out">Check-out Date:</label>
-          <input type="date" id="check-out">
+          <input type="date" id="check-out" [(ngModel)]="checkOutDate" (change)="onDateChange()">
         </div>
   
         <div class="filter-group">
-          <button class="reset-filters">Reset Filters</button>
+          <button class="reset-filters" (click)="resetFilters()">Reset Filters</button>
         </div>
       </div>
   
      
       <div class="room-cards">
-        <div class="room-card" >
-          <img src="" >
-          <h3>Room</h3>
-          <p class="price">$/night</p>
+        <div class="room-card" *ngFor="let room of availableRooms">
+          <img [src]="room.images[0]?.source" alt="Room Image" >
+          <h3>{{room.name}}</h3>
+          <p class="price">${{ room.pricePerNight }}/night</p>
           <button >View Details</button>
         </div>
-        <div class="room-card">
-          <img src="">
-          <h3>Room</h3>
-          <p class="price">$/night</p>
-          <button>View Details</button>
-        </div>
-        <div class="room-card">
-          <img src="" >
-          <h3>Room</h3>
-          <p class="price">$/night</p>
-          <button>View Details</button>
-        </div>
+        
       </div>
     </div>
     <footer>
