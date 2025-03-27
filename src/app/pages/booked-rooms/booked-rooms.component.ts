@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CityService } from '../../city.service';
 
+
 @Component({
   selector: 'app-booked-rooms',
   imports: [RouterLink],
@@ -26,5 +27,7 @@ export class BookedRoomsComponent {
         this.city = data;
       });
     }
+
+    
 
 }
