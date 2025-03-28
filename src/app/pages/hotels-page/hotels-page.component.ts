@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 
 import { RouterLink } from '@angular/router';
-import { HotelsService } from '../../hotels.service';
+import { HotelsService } from '../../service/hotels.service';
 import { CommonModule } from '@angular/common';
-import { CityService } from '../../city.service';
+import { CityService } from '../../service/city.service';
 
 @Component({
   selector: 'app-hotel',

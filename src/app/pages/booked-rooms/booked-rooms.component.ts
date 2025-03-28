@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { CityService } from '../../city.service';
+import { CityService } from '../../service/city.service';
 
 
 @Component({
