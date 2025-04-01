@@ -27,7 +27,8 @@ export class RoomsPageComponent implements OnInit {
   }];
 
   priceRange: number = 1000;
-  apiResponse: any=[ ];
+  apiResponse: any=[ ];   
+  //aqedan wavshale
  
   availableRooms: any[] = [];
   
