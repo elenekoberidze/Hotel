@@ -4,6 +4,7 @@ import { RoomTypesService } from '../../service/room-types.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HotelBookingService } from '../../service/hotel-booking.service';
+import { Rooms } from '../../modules/rooms.model';
 
 @Component({
   selector: 'app-rooms-page',
@@ -14,21 +15,21 @@ import { HotelBookingService } from '../../service/hotel-booking.service';
 export class RoomsPageComponent implements OnInit {
 
   roomTypes: any[] = [ {
-    "id": 1,
-    "name": "Single Room"
+    id: 1,
+    name: "Single Room",
   },
   {
-    "id": 2,
-    "name": "Double Room"
+    id: 2,
+    name: "Double Room",
   },
   {
-    "id": 3,
-    "name": "Deluxe Room"
+    id: 3,
+    name: "Deluxe Room",
   }];
 
   priceRange: number = 1000;
-  apiResponse: any=[ ];   
-  //aqedan wavshale
+  apiResponse: Rooms[] = [];   
+  
  
   availableRooms: any[] = [];
   

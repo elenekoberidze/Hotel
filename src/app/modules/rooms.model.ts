@@ -6,6 +6,7 @@ export interface Rooms {
     available: boolean,
     maximumGuests: number,
     bookedDates: BookedDates[],
+    images: Images[],
 }
 
 export interface BookedDates {
