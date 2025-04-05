@@ -14,7 +14,7 @@
 </header>
 
 <section class="hero">
-    <div class="hero-image"><img src="assets/hotel.jpg" alt=""></div> 
+    <div class="hero-image" [style.backgroundImage]="'url(' + currentHotel?.featuredImage + ')'"><img *ngIf="!currentHotel" src="" alt=""></div> 
     <div class="hero-content"> 
       <h1>Choose and book the best rooms</h1>
       <p>Book your room now and get the best deals</p>
