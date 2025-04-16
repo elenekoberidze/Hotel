@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 import { RoomTypesService } from '../../service/room-types.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HotelBookingService } from '../../service/hotel-booking.service';
+
 import { Rooms } from '../../modules/rooms.model';
 
 @Component({
@@ -12,7 +12,7 @@ import { Rooms } from '../../modules/rooms.model';
   templateUrl: './rooms-page.component.html',
   styleUrl: './rooms-page.component.css'
 })
-export class RoomsPageComponent implements OnInit {
+export class RoomsPageComponent  {
 
   roomTypes: any[] = [ {
     id: 1,
@@ -37,17 +37,13 @@ export class RoomsPageComponent implements OnInit {
   checkOutDate: string = '';
   
 
-  constructor(private roomTypesService: RoomTypesService, private hotelBookingService: HotelBookingService) {
+  constructor(private roomTypesService: RoomTypesService,) {
     
 
    }
 
-   ngOnInit():void {this.hotelBookingService.getAllRooms().subscribe((data) => {
-    this.apiResponse= data;
-    this.filterRooms();
-    this.getRoomTypes();
-    
-  });}
+   ngOnInit():void {
+  ;}
   filterRooms(): void {
     this.availableRooms = this.apiResponse.filter((room: any) => {
       return this.isRoomAvailable(room, this.checkInDate, this.checkOutDate);

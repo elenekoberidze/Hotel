@@ -2,9 +2,10 @@ import { Component , OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {  RouterLink } from '@angular/router';
 import { Rooms } from '../../modules/rooms.model';
-import { HotelBookingService } from '../../service/hotel-booking.service';
+
 import { CommonModule } from '@angular/common';
 import { HotelsService } from '../../service/hotels.service';
+import { RoomsService } from '../../service/rooms.service';
 
 
 @Component({
@@ -13,58 +14,29 @@ import { HotelsService } from '../../service/hotels.service';
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css',
   standalone: true,
+  template: `
+    <div *ngFor="let room of rooms">
+      <h3>{{ room.name }}</h3>
+      <p>Price: {{ room.pricePerNight }}</p>
+      <p>Guests: {{ room.maximumGuests }}</p>
+      <img *ngFor="let image of room.images" [src]="image.source" [alt]="room.name" />
+    </div>
+  `,
 })
-export class HomePageComponent implements OnInit {
+export class HomePageComponent {
   rooms: Rooms[] = [];
+  
 
   ngOnInit(): void {
-    this.rooms = [
-    {id: 3,
-    name: 'Club Room',
-    hotelId: 1,
-    pricePerNight: 89,
-    available: true,
-    maximumGuests: 2,
-    bookedDates: [],
-  images: [
-      {
-        id: 7,
-        source: "https://images.trvl-media.com/lodging/16000000/15840000/15835100/15835033/b6bb61fc.jpg?impolicy=fcrop&w=1200&h=800&p=1&q=medium",
-        roomId: 2
-      }]},
-    {id: 1,
-      name: 'Premium Room',
-      hotelId: 1,
-      pricePerNight: 199,
-      available: true,
-      maximumGuests: 3,
-      bookedDates: [],
-    images: [
-      {
-        id: 13,
-        source: "https://images.trvl-media.com/lodging/16000000/15840000/15835100/15835033/74bb8203.jpg?impolicy=fcrop&w=1200&h=800&p=1&q=medium",
-        roomId: 3
-      }]},
-
-    {id: 4,
-    name: 'Deluxe Double Room',
-    hotelId: 1,
-    pricePerNight: 189,
-    available: true,
-    maximumGuests: 5,
-    bookedDates: [],
-    images: [
-      {
-        id: 18,
-        source: 'https://images.trvl-media.com/lodging/16000000/15840000/15835100/15835033/14b60598.jpg?impolicy=fcrop&w=1200&h=800&p=1&q=medium',
-        roomId: 4
-      }
-    ]}
-  ];
+    this.roomsService.getRooms().subscribe((data) => {
+      this.rooms = data;
+      console.log(data);
+      
+    });
   this.currentHotel = this.hotels[this.currentIndex];
   this.changeBackgroundImage();
   }
-constructor( private hotelBookingService: HotelBookingService, private hotelsService: HotelsService) {}
+constructor( private hotelsService: HotelsService, private roomsService: RoomsService) {}
 hotels: any[] = [
   {
     id: 1,
