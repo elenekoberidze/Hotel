@@ -14,12 +14,17 @@
 </header>
 
 <section class="hero">
-    <div class="hero-image" [style.backgroundImage]="'url(' + currentHotel?.featuredImage + ')'"><img *ngIf="!currentHotel" src="" alt=""></div> 
-    <div class="hero-content"> 
-      <h1>Choose and book the best rooms</h1>
-      <p>Book your room now and get the best deals</p>
-    </div>
-  </section>
+  <div
+    class="hero-image"
+    [style.backgroundImage]="currentHotel ? 'url(' + currentHotel.featuredImage + ')' : ''"
+  >
+    <img *ngIf="!currentHotel" src="" alt="No image available">
+  </div>
+  <div class="hero-content">
+    <h1>Choose and book the best rooms</h1>
+    <p>Book your room now and get the best deals</p>
+  </div>
+</section>
 
 <section class="rooms">
   <div class="container">

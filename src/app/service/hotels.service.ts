@@ -15,6 +15,7 @@ export class HotelsService {
   getHotels(): Observable<Hotels[]> {
     return this.http.get<Hotels[]>(this.apiUrl).pipe(
       map((data: any) => {
+        console.log('Raw API Response:', data); 
         return data.map((hotel: any) => ({
           id: hotel.id,
           name: hotel.name,
@@ -24,5 +25,6 @@ export class HotelsService {
       })
     );
   }
+  
  
 }

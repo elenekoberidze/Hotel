@@ -3,9 +3,11 @@ import { FormsModule } from '@angular/forms';
 import {  RouterLink } from '@angular/router';
 import { Rooms } from '../../modules/rooms.model';
 
+
 import { CommonModule } from '@angular/common';
 import { HotelsService } from '../../service/hotels.service';
 import { RoomsService } from '../../service/rooms.service';
+import { Hotels } from '../../modules/hotels.model';
 
 
 @Component({
@@ -23,7 +25,7 @@ import { RoomsService } from '../../service/rooms.service';
     </div>
   `,
 })
-export class HomePageComponent {
+export class HomePageComponent implements OnInit {
   rooms: Rooms[] = [];
   
 
@@ -33,36 +35,24 @@ export class HomePageComponent {
       console.log(data);
       
     });
-  this.currentHotel = this.hotels[this.currentIndex];
-  this.changeBackgroundImage();
+  
+  this.hotelsService.getHotels().subscribe(
+    (hotels) => {
+      this.hotels = hotels;
+      console.log('Processed Hotels:', this.hotels); 
+      if (this.hotels.length > 0) {
+        this.currentHotel = this.hotels[this.currentIndex];
+        this.changeBackgroundImage();
+      }
+    },
+    (error) => {
+      console.error('Error fetching hotels:', error); 
+    }
+  );
   }
 constructor( private hotelsService: HotelsService, private roomsService: RoomsService) {}
-hotels: any[] = [
-  {
-    id: 1,
-    name: "The Biltmore Hotel Tbilisi",
-    address: "29 Rustaveli Ave, Tbilisi, Tbilisi, 0108",
-    city: "Tbilisi",
-    featuredImage: "https://images.trvl-media.com/lodging/16000000/15840000/15835100/15835033/41cbdcb1.jpg?impolicy=resizecrop&rw=1200&ra=fit",
-    rooms: []
-  },
-  {
-    id: 2,
-    name: "Courtyard by Marriott Tbilisi",
-    address: "4, Freedom Square, Tbilisi, 0105",
-    city: "Tbilisi",
-    featuredImage: "https://images.trvl-media.com/lodging/1000000/920000/916400/916376/3e65a896.jpg?impolicy=resizecrop&rw=1200&ra=fit",
-    rooms: []
-  },
-  {
-    id: 3,
-    name: "Radisson Blu Iveria Hotel Tbilisi",
-    address: "1 Republic square, Tbilisi, 0108",
-    city: "Tbilisi",
-    featuredImage: "https://images.trvl-media.com/lodging/3000000/2620000/2614700/2614694/84d23097.jpg?impolicy=resizecrop&rw=1200&ra=fit",
-    rooms: []
-  }
-];
+hotels: Hotels[] = [];
+
 
 currentHotel: any;
 currentIndex = 0;
