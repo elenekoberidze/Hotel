@@ -105,7 +105,9 @@ header nav ul li a:hover {
     font-size: 16px;
 }
 
-
+.filters p{
+    color: #333;
+}
 .hotel-cards {
     display: flex;
     flex-wrap: wrap;

@@ -34,14 +34,14 @@
           <span id="priceValue" >{{priceRange}}</span>
         </div>
   
-        <div class="filter-group" >
-          <label for="check-in" >Check-in Date:</label>
-          <input type="date" id="check-in" [(ngModel)]="checkInDate" (change)="onDateChange()">
-        </div>
-  
         <div class="filter-group">
-          <label for="check-out">Check-out Date:</label>
-          <input type="date" id="check-out" [(ngModel)]="checkOutDate" (change)="onDateChange()">
+          <label for="check-in">Check-In:</label>
+          <input id="check-in" type="date" [(ngModel)]="checkInDate" (change)="onDateChange()" />
+        </div>
+      
+        <div class="filter-group">
+          <label for="check-out">Check-Out:</label>
+          <input id="check-out" type="date" [(ngModel)]="checkOutDate" (change)="onDateChange()" />
         </div>
   
         <div class="filter-group">
@@ -52,12 +52,11 @@
      
       <div class="room-cards">
         <div class="room-card" *ngFor="let room of availableRooms">
-          <img [src]="room.images[0]?.source" alt="Room Image" >
-          <h3>{{room.name}}</h3>
+          <img [src]="room.images[0]?.source" alt="Room Image" />
+          <h3>{{ room.name }}</h3>
           <p class="price">${{ room.pricePerNight }}/night</p>
-          <button >View Details</button>
+          <button>View Details</button>
         </div>
-        
       </div>
     </div>
     

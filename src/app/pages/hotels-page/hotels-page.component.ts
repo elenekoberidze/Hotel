@@ -15,7 +15,7 @@ import { Hotels } from '../../modules/hotels.model';
 })
 export class HotelsPageComponent implements OnInit {
   hotels: Hotels[]=[];
-  city:any[]=["Tbilisi"];
+  city:Hotels[]=[];
   constructor(private hotelsService: HotelsService, private cityService: CityService) { 
     this.getCity();
   }
@@ -26,9 +26,17 @@ export class HotelsPageComponent implements OnInit {
   }
 
  
-  getCity(  ) {
-    this.cityService.getCitys().subscribe(data => {
-      this.city = data;
-    });
+  getCity(): void {
+    this.cityService.getCitys().subscribe(
+      (data) => {
+        console.log('City data received:', data); 
+        this.city = data;
+      },
+      (error) => {
+        console.error('Error fetching cities:', error); 
+      }
+    );
   }
+  
+  
 }

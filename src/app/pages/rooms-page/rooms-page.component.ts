@@ -12,44 +12,43 @@ import { Rooms } from '../../modules/rooms.model';
   templateUrl: './rooms-page.component.html',
   styleUrl: './rooms-page.component.css'
 })
-export class RoomsPageComponent  {
+export class RoomsPageComponent implements OnInit {
 
-  roomTypes: any[] = [ {
-    id: 1,
-    name: "Single Room",
-  },
-  {
-    id: 2,
-    name: "Double Room",
-  },
-  {
-    id: 3,
-    name: "Deluxe Room",
-  }];
-
-  priceRange: number = 1000;
-  apiResponse: Rooms[] = [];   
   
- 
+
+  roomTypes: Rooms[] = [];
   availableRooms: any[] = [];
-  
+  apiResponse: Rooms[] = [];
+  priceRange: number = 1000;
   checkInDate: string = '';
   checkOutDate: string = '';
-  
 
-  constructor(private roomTypesService: RoomTypesService,) {
-    
+  constructor(private roomTypesService: RoomTypesService) {}
 
-   }
+  ngOnInit(): void {
+    this.getRoomTypes();
+  }
 
-   ngOnInit():void {
-  ;}
+  getRoomTypes(): void {
+    this.roomTypesService.getRoomTypes().subscribe(
+      (data) => {
+        console.log('Room types fetched:', data);
+        this.roomTypes = data;
+        this.apiResponse = data; 
+      },
+      (error) => {
+        console.error('Error fetching room types:', error);
+      }
+    );
+  }
+
   filterRooms(): void {
     this.availableRooms = this.apiResponse.filter((room: any) => {
       return this.isRoomAvailable(room, this.checkInDate, this.checkOutDate);
     });
   }
-  isRoomAvailable(room: any, checkIn: string, checkOut: string) {
+
+  isRoomAvailable(room: any, checkIn: string, checkOut: string): boolean {
     const checkInDate = new Date(checkIn);
     const checkOutDate = new Date(checkOut);
 
@@ -59,37 +58,26 @@ export class RoomsPageComponent  {
         return false;
       }
     }
-
     return true;
-    
-    
   }
+
   onDateChange(): void {
     if (this.checkInDate && this.checkOutDate) {
       this.filterRooms();
     }
   }
-  
-  getRoomTypes(): void {
-    this.roomTypesService.getRoomTypes().subscribe(data => {
-      this.roomTypes = data;
-    }, (error) => {
-      console.error('Error fetching room types:', error);
-    });
-  }
-   onPriceChange():void {
-    console.log('Selected price range:', this.priceRange);
-    
-   }
 
-   resetFilters(): void {
+  onPriceChange(): void {
+    console.log('Selected price range:', this.priceRange);
+  }
+
+  resetFilters(): void {
     this.checkInDate = '';
     this.checkOutDate = '';
-    this.priceRange = 500;
+    this.priceRange = 0;
     this.availableRooms = [];
   }
-
-   
+}
 
    
 
@@ -97,4 +85,4 @@ export class RoomsPageComponent  {
 
   
 
-}
+

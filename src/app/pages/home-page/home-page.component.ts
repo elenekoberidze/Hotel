@@ -51,6 +51,8 @@ export class HomePageComponent implements OnInit {
   );
   }
 constructor( private hotelsService: HotelsService, private roomsService: RoomsService) {}
+
+
 hotels: Hotels[] = [];
 
 
