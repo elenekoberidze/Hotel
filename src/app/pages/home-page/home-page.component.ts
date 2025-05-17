@@ -65,7 +65,7 @@ changeBackgroundImage(): void {
     this.currentHotel = this.hotels[this.currentIndex];
   }, 3000); 
 }
-isMenuOpen = false;
+isMenuOpen = false; 
 
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
