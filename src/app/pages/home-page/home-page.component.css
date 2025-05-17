@@ -18,6 +18,7 @@ header {
   justify-content: space-between;
   align-items: center;
   animation: slideIn 2s ease-in-out;
+  position: relative;
 }
 
 header .logo h1 {
@@ -42,15 +43,84 @@ header nav ul li a {
 
 header nav ul li a:hover {
   color: #d4af37;
-  
 }
 
 @keyframes slideIn {
   0% {
-      transform: translateX(-100%);
+    transform: translateX(-100%);
   }
   100% {
-      transform: translateX(0);
+    transform: translateX(0);
+  }
+}
+
+
+.burger-menu {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.burger-menu span {
+  width: 25px;
+  height: 3px;
+  background-color: white;
+  transition: all 0.3s ease;
+}
+
+header nav {
+  display: flex;
+}
+
+@media (max-width: 768px) {
+  .burger-menu {
+    display: flex;
+  }
+
+  header nav {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    width: 100%;
+    flex-direction: column;
+    background-color: #2c3e50;
+    display: none;
+    padding: 10px;
+  }
+
+  header nav.active {
+    display: flex;
+  }
+
+  header nav ul {
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+  }
+
+  header nav ul li {
+    margin-left: 0;
+  }
+
+  .burger-menu span:nth-child(1) {
+    transform-origin: top left;
+  }
+
+  .burger-menu span:nth-child(3) {
+    transform-origin: bottom left;
+  }
+
+  .burger-menu.active span:nth-child(1) {
+    transform: rotate(45deg);
+  }
+
+  .burger-menu.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .burger-menu.active span:nth-child(3) {
+    transform: rotate(-45deg);
   }
 }
 

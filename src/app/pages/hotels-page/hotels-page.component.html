@@ -3,12 +3,17 @@
     <div class="logo">
         <h1>Hotel Booking</h1>
     </div>
-    <nav>
+    <div class="burger-menu" (click)="toggleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+    <nav  [class.active]="isMenuOpen">
         <ul>
-            <li><a routerLink="/home">Home</a></li>
-            <li><a routerLink="/hotels">Hotels</a></li>
-            <li><a routerLink="/rooms">Rooms</a></li>
-            <li><a routerLink="/booked-rooms">Booked Rooms</a></li>
+            <li><a routerLink="/home" (click)="closeMenu()">Home</a></li>
+            <li><a routerLink="/hotels" (click)="closeMenu()">Hotels</a></li>
+            <li><a routerLink="/rooms" (click)="closeMenu()">Rooms</a></li>
+            <li><a routerLink="/booked-rooms" (click)="closeMenu()"> Booked Rooms</a></li>
         </ul>
     </nav>
 </header>

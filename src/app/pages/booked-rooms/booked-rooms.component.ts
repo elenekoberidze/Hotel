@@ -28,6 +28,14 @@ export class BookedRoomsComponent {
       });
     }
 
-    
+    isMenuOpen = false;
+
+  toggleMenu(): void {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  closeMenu(): void {
+    this.isMenuOpen = false;
+  }
 
 }

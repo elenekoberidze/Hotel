@@ -103,7 +103,15 @@ filterRooms(): void {
   this.checkOutDate = '';
   this.availableRooms = [...this.apiResponse]; 
 }
+isMenuOpen = false;
 
+  toggleMenu(): void {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  closeMenu(): void {
+    this.isMenuOpen = false;
+  }
 
 }
 

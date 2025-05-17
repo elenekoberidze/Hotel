@@ -38,6 +38,14 @@ export class HotelsPageComponent implements OnInit {
       }
     );
   }
-  
+  isMenuOpen = false;
+
+  toggleMenu(): void {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  closeMenu(): void {
+    this.isMenuOpen = false;
+  }
   
 }
