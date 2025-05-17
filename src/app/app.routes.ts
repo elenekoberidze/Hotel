@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { RoomsPageComponent } from './pages/rooms-page/rooms-page.component';
+import { BookingPageComponent } from './booking-page/booking-page.component';
 
 
 export const routes: Routes = [
@@ -22,5 +23,5 @@ export const routes: Routes = [
             {
                 path: 'booked-rooms',        
                 loadComponent: () => import('./pages/booked-rooms/booked-rooms.component').then(m => m.BookedRoomsComponent)
-            },
+            },{ path: 'booking/:id', component: BookingPageComponent },
 ];

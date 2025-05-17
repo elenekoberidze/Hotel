@@ -1,0 +1,26 @@
+<div *ngIf="room">
+  <h2>Book {{ room.name }}</h2>
+  <p>Price per night: {{ room.pricePerNight }}</p>
+  <p>Maximum Guests: {{ room.maximumGuests }}</p>
+  
+  <form (ngSubmit)="submitBooking()">
+    <label>
+      Name:
+      <input type="text" [(ngModel)]="customerName" name="customerName" required />
+    </label>
+    <label>
+      Phone:
+      <input type="text" [(ngModel)]="customerPhone" name="customerPhone" required />
+    </label>
+    <label>
+      Check-in Date:
+      <input type="date" [(ngModel)]="checkInDate" name="checkInDate" required />
+    </label>
+    <label>
+      Check-out Date:
+      <input type="date" [(ngModel)]="checkOutDate" name="checkOutDate" required />
+    </label>
+    <button type="submit">Confirm Booking</button>
+  </form>
+</div>
+

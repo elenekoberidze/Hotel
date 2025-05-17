@@ -8,12 +8,10 @@ import { Booking } from '../modules/booking.model';
 })
 export class SelectedRoomsService {
 
-  private aPiUrl = 'https://hotelbooking.stepprojects.ge/api/Booking';
+   private aPiUrl = 'https://hotelbooking.stepprojects.ge/api/Booking';
 
+  constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient) { }
-
- postSelectedRooms(selectedRooms: Booking[]): Observable<any> {
+  postSelectedRooms(selectedRooms: Booking[]): Observable<any> {
     return this.http.post<any>(this.aPiUrl, selectedRooms);
-  }
-}
+  }}

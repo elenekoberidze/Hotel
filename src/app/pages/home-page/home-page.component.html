@@ -36,14 +36,18 @@
       <h2>Best Rooms</h2>
       <div class="room-cards" >
           <div class="room-card" *ngFor="let room of rooms | slice:0:3">
-            <img *ngIf="room.images.length > 0" [src]="room.images[0].source" />
-              <h3>{{room.name}}</h3>
-              <p>price: {{room.pricePerNight}} </p>
-              <p> Guests: {{room.maximumGuests}}</p>
-              <p *ngIf="room.available">Available</p>
-              <p *ngIf="!room.available">Not Available</p>
-              <button class="book-now" *ngIf="room.available">Book Now</button>
-          </div>
+  <img *ngIf="room.images.length > 0" [src]="room.images[0].source" />
+  <h3>{{ room.name }}</h3>
+  <p>Price: {{ room.pricePerNight }}</p>
+  <p>Guests: {{ room.maximumGuests }}</p>
+  <p *ngIf="room.available">Available</p>
+  <p *ngIf="!room.available">Not Available</p>
+  <button *ngIf="room.available" class="book-now" [routerLink]="['/booking', room.id]">
+  Book Now
+</button>
+
+</div>
+
           
       </div>
   </div>

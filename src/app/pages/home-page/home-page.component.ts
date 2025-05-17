@@ -1,6 +1,6 @@
 import { Component , OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import {  RouterLink } from '@angular/router';
+import {  Router, RouterLink } from '@angular/router';
 import { Rooms } from '../../modules/rooms.model';
 
 
@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { HotelsService } from '../../service/hotels.service';
 import { RoomsService } from '../../service/rooms.service';
 import { Hotels } from '../../modules/hotels.model';
+import { SelectedRoomsService } from '../../service/selected-rooms.service';
 
 
 @Component({
@@ -50,7 +51,13 @@ export class HomePageComponent implements OnInit {
     }
   );
   }
-constructor( private hotelsService: HotelsService, private roomsService: RoomsService) {}
+constructor(
+  private roomsService: RoomsService,
+  private hotelsService: HotelsService,
+  private selectedRoomsService: SelectedRoomsService,
+  private router: Router
+) {}
+
 
 
 hotels: Hotels[] = [];
@@ -74,6 +81,10 @@ isMenuOpen = false;
   closeMenu(): void {
     this.isMenuOpen = false;
   }
+  navigateToBookingPage(room: Rooms): void {
+  this.router.navigate(['/booking', room.id]);
+}
+
 }
 
 
