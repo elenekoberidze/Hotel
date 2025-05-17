@@ -16,6 +16,7 @@ import { Hotels } from '../../modules/hotels.model';
 export class HotelsPageComponent implements OnInit {
   hotels: Hotels[]=[];
   city:Hotels[]=[];
+  
   constructor(private hotelsService: HotelsService, private cityService: CityService) { 
     this.getCity();
   }

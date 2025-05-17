@@ -1,5 +1,5 @@
 import { Component , OnInit} from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { RoomTypesService } from '../../service/room-types.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -24,29 +24,31 @@ export class RoomsPageComponent implements OnInit {
   checkInDate: string = '';
   checkOutDate: string = '';
 
-  constructor(private roomTypesService: RoomTypesService,private roomsService: RoomsService) {}
+  constructor(private roomTypesService: RoomTypesService,private roomsService: RoomsService,private route: ActivatedRoute) {}
 
   maxPrice: number = 1000;
-
+hotelId!: number;
 ngOnInit(): void {
+  this.hotelId = +this.route.snapshot.paramMap.get('hotelId')!;
   this.getRoomTypes();
   this.maxPrice = Math.max(...this.apiResponse.map(room => room.pricePerNight), 1000);
 }
 
 
-  getRoomTypes(): void {
+ getRoomTypes(): void {
   this.roomsService.getRooms().subscribe(
     (data) => {
       console.log('Rooms fetched:', data);
-      this.roomTypes = data;  
-      this.apiResponse = data; 
-      this.availableRooms = data; 
+      this.apiResponse = data.filter(room => room.hotelId === this.hotelId); 
+      this.roomTypes = [...this.apiResponse]; 
+      this.availableRooms = [...this.apiResponse]; 
     },
     (error) => {
       console.error('Error fetching rooms:', error);
     }
   );
 }
+
 
 
   selectedRoomType: string = '';

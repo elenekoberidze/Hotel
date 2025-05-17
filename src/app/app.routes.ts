@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { RoomsPageComponent } from './pages/rooms-page/rooms-page.component';
 
 
 export const routes: Routes = [
@@ -14,7 +15,7 @@ export const routes: Routes = [
         {
             path: 'hotels',
             loadComponent: () => import('./pages/hotels-page/hotels-page.component').then(m => m.HotelsPageComponent)},
-            {
+           { path: 'rooms/:hotelId', component: RoomsPageComponent }, {
                 path: 'rooms',
                 loadComponent: () => import('./pages/rooms-page/rooms-page.component').then(m => m.RoomsPageComponent)
             },

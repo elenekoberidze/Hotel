@@ -29,14 +29,15 @@
 
        
         <div class="hotel-cards">
-            <div *ngFor="let hotel of hotels" class="hotel-card">
-                <img [src]="hotel.featuredImage" >
-                <h3>{{ hotel.name }}</h3>
-                <p class="city">{{ hotel.city }}</p>
-                <p class="address">{{hotel.address}}</p>
-                <button>View Rooms</button>
-            </div>
-        </div>
+  <div *ngFor="let hotel of hotels" class="hotel-card">
+    <img [src]="hotel.featuredImage" alt="{{ hotel.name }}" />
+    <h3>{{ hotel.name }}</h3>
+    <p class="city">{{ hotel.city }}</p>
+    <p class="address">{{ hotel.address }}</p>
+    <button [routerLink]="['/rooms', hotel.id]">View Rooms</button>
+  </div>
+</div>
+
     </div>
 
    
