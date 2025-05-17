@@ -41,13 +41,12 @@ export class HomePageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Fetch rooms
+    
     this.roomsService.getRooms().subscribe((data) => {
       this.rooms = data;
       console.log('Rooms:', data);
     });
 
-    // Fetch hotels
     this.hotelsService.getHotels().subscribe(
       (data) => {
         this.hotels = data;

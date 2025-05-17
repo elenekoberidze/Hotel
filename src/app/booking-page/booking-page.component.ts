@@ -30,15 +30,20 @@ export class BookingPageComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    const roomId = this.route.snapshot.paramMap.get('id');
-    if (roomId) {
-      this.roomsService.getRoomById(roomId).subscribe(
-        (room) => (this.room = room),
-        (error) => console.error('Error fetching room details:', error)
-      );
-    }
+ ngOnInit(): void {
+  const roomId = this.route.snapshot.paramMap.get('id');
+  if (roomId) {
+    this.roomsService.getRoomById(roomId).subscribe(
+      (room) => {
+        this.room = room;
+        console.log('Room details:', this.room);
+      },
+      (error) => console.error('Error fetching room details:', error)
+    );
   }
+  console.log('Room details:', this.room);
+
+}
 
   submitBooking(): void {
     if (this.bookingForm.valid) {

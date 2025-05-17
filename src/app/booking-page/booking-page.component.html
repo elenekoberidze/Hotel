@@ -21,7 +21,17 @@
 <div class="booking-page">
   <h2>Book Your Stay</h2>
   <div *ngIf="room">
-    <img *ngIf="room.images.length > 0" [src]="room.images[0].source" alt="Room Image" />
+    <div class="room-images">
+      <img
+  *ngFor="let image of room.images; else noImage"
+  [src]="image.source"
+  [alt]="room.name"
+/>
+<ng-template #noImage>
+  <img src="assets/placeholder.jpg" alt="No Image Available" />
+</ng-template>
+
+    </div>
     <h3>{{ room.name }}</h3>
     <p>Price per Night: {{ room.pricePerNight }}</p>
     <p>Maximum Guests: {{ room.maximumGuests }}</p>
@@ -47,6 +57,3 @@
     <button type="submit" [disabled]="!bookingForm.valid">Book Now</button>
   </form>
 </div>
-
-
-
