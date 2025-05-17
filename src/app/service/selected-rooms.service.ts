@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Booking } from '../modules/booking.model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class SelectedRoomsService {
 
   constructor(private http: HttpClient) { }
 
- postSelectedRooms(selectedRooms: any[]): Observable<any> {
+ postSelectedRooms(selectedRooms: Booking[]): Observable<any> {
     return this.http.post<any>(this.aPiUrl, selectedRooms);
   }
 }
