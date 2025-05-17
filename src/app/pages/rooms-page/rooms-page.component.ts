@@ -23,87 +23,90 @@ export class RoomsPageComponent implements OnInit {
   priceRange: number = 1000;
   checkInDate: string = '';
   checkOutDate: string = '';
-
-  constructor(private roomTypesService: RoomTypesService,private roomsService: RoomsService,private route: ActivatedRoute) {}
-
-  maxPrice: number = 1000;
-hotelId!: number;
-ngOnInit(): void {
-  this.hotelId = +this.route.snapshot.paramMap.get('hotelId')!;
-  this.getRoomTypes();
-  this.maxPrice = Math.max(...this.apiResponse.map(room => room.pricePerNight), 1000);
-}
-
-
- getRoomTypes(): void {
-  this.roomsService.getRooms().subscribe(
-    (data) => {
-      console.log('Rooms fetched:', data);
-      this.apiResponse = data.filter(room => room.hotelId === this.hotelId); 
-      this.roomTypes = [...this.apiResponse]; 
-      this.availableRooms = [...this.apiResponse]; 
-    },
-    (error) => {
-      console.error('Error fetching rooms:', error);
-    }
-  );
-}
-
-
-
   selectedRoomType: string = '';
+  maxPrice: number = 1000;
+  hotelId: number | null = null;
+  isMenuOpen = false;
 
-onRoomTypeChange(): void {
-  this.filterRooms();
-}
+  constructor(
+    private roomTypesService: RoomTypesService,
+    private roomsService: RoomsService,
+    private route: ActivatedRoute
+  ) {}
 
-filterRooms(): void {
-  this.availableRooms = this.apiResponse.filter((room: any) => {
-    const matchesPrice = room.pricePerNight <= this.priceRange;
-    const matchesDates = this.isRoomAvailable(room, this.checkInDate, this.checkOutDate);
-    const matchesType = !this.selectedRoomType || room.id === +this.selectedRoomType;
-    return matchesPrice && matchesDates && matchesType;
-  });
-}
+  ngOnInit(): void {
+    const routeHotelId = this.route.snapshot.paramMap.get('hotelId');
+    this.hotelId = routeHotelId ? +routeHotelId : null; 
 
-
-
-  isRoomAvailable(room: any, checkIn: string, checkOut: string): boolean {
-  if (!checkIn || !checkOut) {
-    return true; 
+    this.getRoomTypes();
   }
 
-  const checkInDate = new Date(checkIn);
-  const checkOutDate = new Date(checkOut);
+  getRoomTypes(): void {
+    this.roomsService.getRooms().subscribe(
+      (data) => {
+        console.log('Rooms fetched:', data);
 
-  return room.bookedDates.every((bookedDate: any) => {
-    const bookedDateObj = new Date(bookedDate.date);
-    return (
-      bookedDateObj < checkInDate || bookedDateObj > checkOutDate
+        
+        this.apiResponse = this.hotelId
+          ? data.filter((room) => room.hotelId === this.hotelId)
+          : data;
+
+        this.roomTypes = [...this.apiResponse];
+        this.availableRooms = [...this.apiResponse];
+
+        
+        this.maxPrice = Math.max(...this.apiResponse.map((room) => room.pricePerNight), 1000);
+      },
+      (error) => {
+        console.error('Error fetching rooms:', error);
+      }
     );
-  });
-}
+  }
 
- onDateChange(): void {
-  if (this.checkInDate && this.checkOutDate) {
+  onRoomTypeChange(): void {
     this.filterRooms();
   }
-}
 
+  filterRooms(): void {
+    this.availableRooms = this.apiResponse.filter((room: any) => {
+      const matchesPrice = room.pricePerNight <= this.priceRange;
+      const matchesDates = this.isRoomAvailable(room, this.checkInDate, this.checkOutDate);
+      const matchesType = !this.selectedRoomType || room.id === +this.selectedRoomType;
+      return matchesPrice && matchesDates && matchesType;
+    });
+  }
 
- onPriceChange(): void {
-  this.filterRooms();
-}
+  isRoomAvailable(room: any, checkIn: string, checkOut: string): boolean {
+    if (!checkIn || !checkOut) {
+      return true;
+    }
 
+    const checkInDate = new Date(checkIn);
+    const checkOutDate = new Date(checkOut);
+
+    return room.bookedDates.every((bookedDate: any) => {
+      const bookedDateObj = new Date(bookedDate.date);
+      return bookedDateObj < checkInDate || bookedDateObj > checkOutDate;
+    });
+  }
+
+  onDateChange(): void {
+    if (this.checkInDate && this.checkOutDate) {
+      this.filterRooms();
+    }
+  }
+
+  onPriceChange(): void {
+    this.filterRooms();
+  }
 
   resetFilters(): void {
-  this.selectedRoomType = '';
-  this.priceRange = 1000;
-  this.checkInDate = '';
-  this.checkOutDate = '';
-  this.availableRooms = [...this.apiResponse]; 
-}
-isMenuOpen = false;
+    this.selectedRoomType = '';
+    this.priceRange = 1000;
+    this.checkInDate = '';
+    this.checkOutDate = '';
+    this.availableRooms = [...this.apiResponse];
+  }
 
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
