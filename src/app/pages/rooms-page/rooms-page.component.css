@@ -241,7 +241,7 @@ h3 {
 
 .price {
     text-align: center;
-    color: #007bff; 
+    color: #000000; 
     font-size: 1.2em; 
     margin: 10px 0;
 }
@@ -251,7 +251,7 @@ button {
     width: 80%;
     margin: 20px auto 0; 
     padding: 10px;
-    background-color: #007bff;
+    background-color:#d4af37; 
     color: white;
     border: none;
     border-radius: 5px;
@@ -260,7 +260,7 @@ button {
 }
 
 button:hover {
-    background-color: #0056b3; 
+    background-color:#d4af37; 
     transform: scale(1.02); 
 }
 

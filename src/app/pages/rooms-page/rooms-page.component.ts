@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { Rooms } from '../../modules/rooms.model';
+import { RoomsService } from '../../service/rooms.service';
 
 @Component({
   selector: 'app-rooms-page',
@@ -23,60 +24,85 @@ export class RoomsPageComponent implements OnInit {
   checkInDate: string = '';
   checkOutDate: string = '';
 
-  constructor(private roomTypesService: RoomTypesService) {}
+  constructor(private roomTypesService: RoomTypesService,private roomsService: RoomsService) {}
 
-  ngOnInit(): void {
-    this.getRoomTypes();
-  }
+  maxPrice: number = 1000;
+
+ngOnInit(): void {
+  this.getRoomTypes();
+  this.maxPrice = Math.max(...this.apiResponse.map(room => room.pricePerNight), 1000);
+}
+
 
   getRoomTypes(): void {
-    this.roomTypesService.getRoomTypes().subscribe(
-      (data) => {
-        console.log('Room types fetched:', data);
-        this.roomTypes = data;
-        this.apiResponse = data; 
-      },
-      (error) => {
-        console.error('Error fetching room types:', error);
-      }
-    );
-  }
+  this.roomsService.getRooms().subscribe(
+    (data) => {
+      console.log('Rooms fetched:', data);
+      this.roomTypes = data;  
+      this.apiResponse = data; 
+      this.availableRooms = data; 
+    },
+    (error) => {
+      console.error('Error fetching rooms:', error);
+    }
+  );
+}
 
-  filterRooms(): void {
-    this.availableRooms = this.apiResponse.filter((room: any) => {
-      return this.isRoomAvailable(room, this.checkInDate, this.checkOutDate);
-    });
-  }
+
+  selectedRoomType: string = '';
+
+onRoomTypeChange(): void {
+  this.filterRooms();
+}
+
+filterRooms(): void {
+  this.availableRooms = this.apiResponse.filter((room: any) => {
+    const matchesPrice = room.pricePerNight <= this.priceRange;
+    const matchesDates = this.isRoomAvailable(room, this.checkInDate, this.checkOutDate);
+    const matchesType = !this.selectedRoomType || room.id === +this.selectedRoomType;
+    return matchesPrice && matchesDates && matchesType;
+  });
+}
+
+
 
   isRoomAvailable(room: any, checkIn: string, checkOut: string): boolean {
-    const checkInDate = new Date(checkIn);
-    const checkOutDate = new Date(checkOut);
-
-    for (const bookedDate of room.bookedDates) {
-      const bookedDateObj = new Date(bookedDate.date);
-      if (bookedDateObj >= checkInDate && bookedDateObj <= checkOutDate) {
-        return false;
-      }
-    }
-    return true;
+  if (!checkIn || !checkOut) {
+    return true; 
   }
 
-  onDateChange(): void {
-    if (this.checkInDate && this.checkOutDate) {
-      this.filterRooms();
-    }
-  }
+  const checkInDate = new Date(checkIn);
+  const checkOutDate = new Date(checkOut);
 
-  onPriceChange(): void {
-    console.log('Selected price range:', this.priceRange);
+  return room.bookedDates.every((bookedDate: any) => {
+    const bookedDateObj = new Date(bookedDate.date);
+    return (
+      bookedDateObj < checkInDate || bookedDateObj > checkOutDate
+    );
+  });
+}
+
+ onDateChange(): void {
+  if (this.checkInDate && this.checkOutDate) {
+    this.filterRooms();
   }
+}
+
+
+ onPriceChange(): void {
+  this.filterRooms();
+}
+
 
   resetFilters(): void {
-    this.checkInDate = '';
-    this.checkOutDate = '';
-    this.priceRange = 0;
-    this.availableRooms = [];
-  }
+  this.selectedRoomType = '';
+  this.priceRange = 1000;
+  this.checkInDate = '';
+  this.checkOutDate = '';
+  this.availableRooms = [...this.apiResponse]; 
+}
+
+
 }
 
    

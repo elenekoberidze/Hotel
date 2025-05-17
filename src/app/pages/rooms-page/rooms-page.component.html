@@ -23,9 +23,10 @@
       <div class="filters">
         <div class="filter-group">
           <label for="room-type">Room Type:</label>
-          <select id="room-type" >
-            <option *ngFor="let room of roomTypes" [value]="room.id" >{{room.name}}</option>
-          </select>
+          <select id="room-type" [(ngModel)]="selectedRoomType" (change)="onRoomTypeChange()">
+  <option value="">All Types</option>
+  <option *ngFor="let room of roomTypes" [value]="room.id">{{room.name}}</option>
+</select>
         </div>
   
         <div class="filter-group">
@@ -51,12 +52,13 @@
   
      
       <div class="room-cards">
-        <div class="room-card" *ngFor="let room of availableRooms">
-          <img [src]="room.images[0]?.source" alt="Room Image" />
-          <h3>{{ room.name }}</h3>
-          <p class="price">${{ room.pricePerNight }}/night</p>
-          <button>View Details</button>
-        </div>
+       <div class="room-card" *ngFor="let room of availableRooms">
+  <img [src]="room.images[0]?.source" alt="Room Image" />
+  <h3>{{ room.name }}</h3>
+  <p class="price">${{ room.pricePerNight }}/night</p>
+  <button>View Details</button>
+</div>
+
       </div>
     </div>
     
