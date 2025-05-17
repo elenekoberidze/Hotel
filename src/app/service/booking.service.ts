@@ -8,11 +8,11 @@ import { Observable } from 'rxjs';
 })
 export class BookingService {
 
-  private apiUrl = 'https://hotelbooking.stepprojects.ge/api/Booking'
+ private bookingApiUrl = 'https://hotelbooking.stepprojects.ge/api/Booking';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  getUsers():Observable<any[]>{
-    return this.http.get<any[]>(this.apiUrl)
+  bookRoom(bookingData: any) {
+    return this.http.post(this.bookingApiUrl, bookingData);
   }
 }

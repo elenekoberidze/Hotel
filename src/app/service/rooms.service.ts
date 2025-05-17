@@ -11,10 +11,10 @@ export class RoomsService {
   private apiUrl ='https://hotelbooking.stepprojects.ge/api/Rooms/GetAll'
 
   constructor(private http: HttpClient) { }
-getRoomById(id: number): Observable<Rooms> {
-  const url = `https://hotelbooking.stepprojects.ge/api/Rooms/${id}`; 
-  return this.http.get<Rooms>(url);
+getRoomById(id: string) {
+  return this.http.get<Rooms>(`${this.apiUrl}/rooms/${id}`);
 }
+
 
 
   getRooms(): Observable<Rooms[]> {

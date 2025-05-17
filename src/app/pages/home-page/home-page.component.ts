@@ -27,52 +27,46 @@ import { SelectedRoomsService } from '../../service/selected-rooms.service';
   `,
 })
 export class HomePageComponent implements OnInit {
-  rooms: Rooms[] = [];
-  
+ rooms: Rooms[] = [];
+  hotels: Hotels[] = [];
+  currentHotel: Hotels | null = null;
+  currentIndex = 0;
+  isMenuOpen = false;
+
+  constructor(
+    private roomsService: RoomsService,
+    private hotelsService: HotelsService,
+    private selectedRoomsService: SelectedRoomsService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
+    // Fetch rooms
     this.roomsService.getRooms().subscribe((data) => {
       this.rooms = data;
-      console.log(data);
-      
+      console.log('Rooms:', data);
     });
-  
-  this.hotelsService.getHotels().subscribe(
-    (hotels) => {
-      this.hotels = hotels;
-      console.log('Processed Hotels:', this.hotels); 
-      if (this.hotels.length > 0) {
-        this.currentHotel = this.hotels[this.currentIndex];
-        this.changeBackgroundImage();
-      }
-    },
-    (error) => {
-      console.error('Error fetching hotels:', error); 
-    }
-  );
+
+    // Fetch hotels
+    this.hotelsService.getHotels().subscribe(
+      (data) => {
+        this.hotels = data;
+        console.log('Hotels:', data);
+        if (this.hotels.length > 0) {
+          this.currentHotel = this.hotels[this.currentIndex];
+          this.startBackgroundRotation();
+        }
+      },
+      (error) => console.error('Error fetching hotels:', error)
+    );
   }
-constructor(
-  private roomsService: RoomsService,
-  private hotelsService: HotelsService,
-  private selectedRoomsService: SelectedRoomsService,
-  private router: Router
-) {}
 
-
-
-hotels: Hotels[] = [];
-
-
-currentHotel: any;
-currentIndex = 0;
-
-changeBackgroundImage(): void {
-  setInterval(() => {
-    this.currentIndex = (this.currentIndex + 1) % this.hotels.length;
-    this.currentHotel = this.hotels[this.currentIndex];
-  }, 3000); 
-}
-isMenuOpen = false; 
+  startBackgroundRotation(): void {
+    setInterval(() => {
+      this.currentIndex = (this.currentIndex + 1) % this.hotels.length;
+      this.currentHotel = this.hotels[this.currentIndex];
+    }, 3000);
+  }
 
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
@@ -81,10 +75,10 @@ isMenuOpen = false;
   closeMenu(): void {
     this.isMenuOpen = false;
   }
-  navigateToBookingPage(room: Rooms): void {
-  this.router.navigate(['/booking', room.id]);
-}
 
+  navigateToBookingPage(room: Rooms): void {
+    this.router.navigate(['/booking', room.id]);
+  }
 }
 
 
