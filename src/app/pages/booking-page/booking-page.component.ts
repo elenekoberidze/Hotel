@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { RoomsService } from '../service/rooms.service';
-import { SelectedRoomsService } from '../service/selected-rooms.service';
-import { BookingService } from '../service/booking.service';
-import { Rooms } from '../modules/rooms.model';
+import { RoomsService } from '../../service/rooms.service';
+import { SelectedRoomsService } from '../../service/selected-rooms.service';
+import { BookingService } from '../../service/booking.service';
+import { Rooms } from '../../modules/rooms.model';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Booking } from '../modules/booking.model';
+import { Booking } from '../../modules/booking.model';
  
 @Component({
   selector: 'app-booking-page',
@@ -30,7 +30,7 @@ export class BookingPageComponent implements OnInit {
   submitting: boolean = false;
   dateConflict: boolean = false;
  
-  // Array of unavailable dates
+  
   unavailableDates: string[] = [];
  
   constructor(
@@ -42,7 +42,7 @@ export class BookingPageComponent implements OnInit {
   ) {}
  
   ngOnInit(): void {
-    // Set default check-in and check-out dates
+    
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -50,10 +50,10 @@ export class BookingPageComponent implements OnInit {
     this.checkInDate = this.formatDateForInput(today);
     this.checkOutDate = this.formatDateForInput(tomorrow);
  
-    // Get room list first to ensure cache is populated
+    
     this.roomsService.getRooms().subscribe({
       next: (rooms) => {
-        // Once we have the rooms list, now try to get the specific room
+        
         const idParam = this.route.snapshot.paramMap.get('id');
         console.log('Route param id:', idParam);
  
@@ -71,30 +71,28 @@ export class BookingPageComponent implements OnInit {
           return;
         }
  
-        // Try to find room directly in the list we just loaded
+        
         const roomFromList = rooms.find((r) => r.id === this.roomId);
         if (roomFromList) {
           this.room = roomFromList;
           this.totalPrice = this.room.pricePerNight;
           this.loading = false;
-          this.calculateTotalPrice(); // Calculate initial price
-          this.extractUnavailableDates(); // Identify unavailable dates
-          this.checkDateAvailability(); // Check initial date selection availability
+          this.calculateTotalPrice(); 
+          this.extractUnavailableDates(); 
+          this.checkDateAvailability(); 
         } else {
-          // If not found in list, try the single room endpoint
+          
           this.fetchRoomDetails();
         }
       },
       error: (err) => {
-        // If we can't get the list, fall back to direct fetch
+        
         this.fetchRoomDetails();
       },
     });
   }
  
-  /**
-   * Extract all booked dates from the room and convert to string format
-   */
+ 
   extractUnavailableDates(): void {
     if (!this.room || !this.room.bookedDates) return;
  
@@ -120,9 +118,9 @@ export class BookingPageComponent implements OnInit {
           this.room = data;
           this.totalPrice = this.room.pricePerNight;
           this.loading = false;
-          this.calculateTotalPrice(); // Calculate initial price
-          this.extractUnavailableDates(); // Identify unavailable dates
-          this.checkDateAvailability(); // Check initial date selection availability
+          this.calculateTotalPrice(); 
+          this.extractUnavailableDates();
+          this.checkDateAvailability(); 
         } else {
           this.error = 'No room data found';
           this.loading = false;
@@ -137,7 +135,7 @@ export class BookingPageComponent implements OnInit {
   }
  
   isFormValid(): boolean {
-    // Check for all required fields
+    
     return !!(
       this.customerName &&
       this.customerPhone &&
@@ -149,16 +147,14 @@ export class BookingPageComponent implements OnInit {
     );
   }
  
-  /**
-   * Check if the currently selected dates are available
-   */
+  
   checkDateAvailability(): void {
     if (!this.room || !this.checkInDate || !this.checkOutDate) {
       this.dateConflict = false;
       return;
     }
  
-    // Reset error specifically for date conflicts
+    
     if (
       this.error ===
       'The room is already booked for some of the selected dates.'
@@ -169,7 +165,7 @@ export class BookingPageComponent implements OnInit {
     const checkIn = new Date(this.checkInDate);
     const checkOut = new Date(this.checkOutDate);
  
-    // Basic validation
+    
     if (
       isNaN(checkIn.getTime()) ||
       isNaN(checkOut.getTime()) ||
@@ -180,21 +176,21 @@ export class BookingPageComponent implements OnInit {
       return;
     }
  
-    // Check for conflicts with booked dates
+   
     if (!this.room.bookedDates || this.room.bookedDates.length === 0) {
-      // If no booked dates, the room is available
+      
       this.dateConflict = false;
       return;
     }
  
-    // Check each day in the range
+    
     const currentDate = new Date(checkIn);
     this.dateConflict = false;
  
     while (currentDate < checkOut) {
       const dateStr = this.formatDateForInput(currentDate);
  
-      // Check if this day is in the unavailable dates list
+     
       if (this.unavailableDates.includes(dateStr)) {
         this.dateConflict = true;
         this.error =
@@ -202,11 +198,11 @@ export class BookingPageComponent implements OnInit {
         break;
       }
  
-      // Move to the next day
+      
       currentDate.setDate(currentDate.getDate() + 1);
     }
  
-    // If no conflicts found, the date range is available
+    
     if (!this.dateConflict) {
       console.log('Date range is available');
     }
@@ -231,17 +227,17 @@ export class BookingPageComponent implements OnInit {
       return;
     }
  
-    // Clear error if it's a date validation error
+    
     if (this.error === 'Check-out date must be after check-in date') {
       this.error = '';
     }
  
-    // Calculate nights difference
+    
     const timeDiff = checkOut.getTime() - checkIn.getTime();
     this.totalNights = Math.ceil(timeDiff / (1000 * 3600 * 24));
     this.totalPrice = this.room.pricePerNight * this.totalNights;
  
-    // Check date availability when dates change
+    
     this.checkDateAvailability();
   }
  
@@ -250,7 +246,7 @@ export class BookingPageComponent implements OnInit {
   }
  
   submitBooking(): void {
-    if (this.submitting) return; // Prevent multiple submissions
+    if (this.submitting) return; 
  
     if (!this.room) {
       this.error = 'Room details not available!';
@@ -267,10 +263,10 @@ export class BookingPageComponent implements OnInit {
       return;
     }
  
-    // Check date validation
+   
     this.calculateTotalPrice();
  
-    // Final check for date availability
+    
     this.checkDateAvailability();
  
     if (this.dateConflict) {
@@ -279,7 +275,7 @@ export class BookingPageComponent implements OnInit {
     }
  
     if (this.error) {
-      return; // Don't proceed if there are validation errors
+      return; 
     }
  
     this.submitting = true;
@@ -298,7 +294,7 @@ export class BookingPageComponent implements OnInit {
  
     console.log('Booking object:', booking);
  
-    // Use BookingService instead of SelectedRoomsService
+   
     this.bookingService.createBooking(booking).subscribe({
       next: (response) => {
         console.log('Booking response:', response);
@@ -309,7 +305,7 @@ export class BookingPageComponent implements OnInit {
       error: (errorResponse) => {
         console.error('Error during booking:', errorResponse);
         if (errorResponse.status === 200) {
-          // If HTTP status is 200 but ended up in error handler
+         
           alert('Booking successful!');
           this.submitting = false;
           this.router.navigate(['/booked-rooms']);

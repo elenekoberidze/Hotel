@@ -42,7 +42,7 @@ export const routes: Routes = [
   {
     path: 'booking/:id',
     loadComponent: () =>
-      import('./booking-page/booking-page.component').then(
+      import('./pages/booking-page/booking-page.component').then(
         (m) => m.BookingPageComponent
       ),
   },
