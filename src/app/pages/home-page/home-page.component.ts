@@ -1,4 +1,4 @@
-import { Component , OnInit } from '@angular/core';
+import { Component , NgZone, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {  Router, RouterLink } from '@angular/router';
 import { Rooms } from '../../modules/rooms.model';
@@ -37,7 +37,8 @@ export class HomePageComponent implements OnInit {
     private roomsService: RoomsService,
     private hotelsService: HotelsService,
     private selectedRoomsService: SelectedRoomsService,
-    private router: Router
+    private router: Router,
+      private ngZone: NgZone
   ) {}
 
   ngOnInit(): void {
@@ -60,11 +61,17 @@ export class HomePageComponent implements OnInit {
     );
   }
 
-  startBackgroundRotation(): void {
-    setInterval(() => {
-      this.currentIndex = (this.currentIndex + 1) % this.hotels.length;
-      this.currentHotel = this.hotels[this.currentIndex];
-    }, 3000);
+ startBackgroundRotation(): void {
+   
+    this.ngZone.runOutsideAngular(() => {
+      setInterval(() => {
+        
+        this.ngZone.run(() => {
+          this.currentIndex = (this.currentIndex + 1) % this.hotels.length;
+          this.currentHotel = this.hotels[this.currentIndex];
+        });
+      }, 3000);
+    });
   }
 
   toggleMenu(): void {
