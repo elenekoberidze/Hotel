@@ -15,7 +15,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './booked-rooms.component.css',
 })
 export class BookedRoomsComponent implements OnInit {
-  city: any[] = ['Tbilisi'];
+ 
   bookings: Booking[] = [];
   isMenuOpen = false;
   loading = true;
@@ -32,13 +32,13 @@ export class BookedRoomsComponent implements OnInit {
   cancelError = '';
  
   constructor(
-    private cityService: CityService,
+    
     private bookingService: BookingService,
     private selectedRoomsService: SelectedRoomsService
   ) {}
  
   ngOnInit() {
-    this.getCity();
+    
     this.userInfo = this.bookingService.getUserInfo();
     this.noUserInfo =
       !this.userInfo || (!this.userInfo.name && !this.userInfo.phone);
@@ -51,11 +51,7 @@ export class BookedRoomsComponent implements OnInit {
     this.loadBookings();
   }
  
-  getCity() {
-    this.cityService.getCitys().subscribe((data) => {
-      this.city = data;
-    });
-  }
+  
  
   loadBookings() {
     this.loading = true;
