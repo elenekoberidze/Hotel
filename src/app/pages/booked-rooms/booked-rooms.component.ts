@@ -26,7 +26,7 @@ export class BookedRoomsComponent implements OnInit {
   userName = '';
   userPhone = '';
  
-  // Add property to track currently cancelling booking
+  
   cancellingBookingId: number | null = null;
   cancelSuccess = false;
   cancelError = '';
@@ -64,7 +64,7 @@ export class BookedRoomsComponent implements OnInit {
     if (this.showAllBookings) {
       this.bookingService.getBookings().subscribe({
         next: (data) => {
-          // Sort bookings by date, newest first
+          
           this.bookings = this.sortBookingsByDate(data);
           console.log('Loaded all bookings:', this.bookings.length);
           this.loading = false;
@@ -78,7 +78,7 @@ export class BookedRoomsComponent implements OnInit {
     } else {
       this.bookingService.getCurrentUserBookings().subscribe({
         next: (data) => {
-          // Sort bookings by date, newest first
+          
           this.bookings = this.sortBookingsByDate(data);
           console.log('Loaded user bookings:', this.bookings.length);
           this.loading = false;
@@ -96,19 +96,19 @@ export class BookedRoomsComponent implements OnInit {
     }
   }
  
-  // Helper function to sort bookings by date (newest first)
+  
   sortBookingsByDate(bookings: Booking[]): Booking[] {
     return [...bookings].sort((a, b) => {
-      // Convert string dates to Date objects for comparison
+     
       const dateA = new Date(a.checkInDate);
       const dateB = new Date(b.checkInDate);
-      // Sort in descending order (newest first)
+      
       return dateB.getTime() - dateA.getTime();
     });
   }
  
   saveUserInfo() {
-    // Create a new userInfo object using the input field values
+    
     if (this.userName && this.userPhone) {
       const userInfo = {
         name: this.userName,
@@ -118,17 +118,17 @@ export class BookedRoomsComponent implements OnInit {
       console.log('Saving user info:', userInfo);
       this.bookingService.saveUserInfo(userInfo);
  
-      // Update the component's userInfo property
+      
       this.userInfo = userInfo;
       this.noUserInfo = false;
  
-      // Switch to filtered view
+      
       this.showAllBookings = false;
  
-      // Load bookings with new filter
+      
       this.loadBookings();
     } else {
-      // Show an error message if fields are missing
+      
       this.cancelError = 'Please enter both name and phone number';
       setTimeout(() => (this.cancelError = ''), 3000);
     }
@@ -147,7 +147,7 @@ export class BookedRoomsComponent implements OnInit {
     this.loadBookings();
   }
  
-  // Check if the booking belongs to current user
+ 
   isUserBooking(booking: Booking): boolean {
     if (!this.userInfo || this.showAllBookings) {
       return false;
@@ -169,7 +169,7 @@ export class BookedRoomsComponent implements OnInit {
   }
  
   cancelBooking(bookingId: number, isUserBooking: boolean) {
-    // Clear previous messages
+    
     this.cancelSuccess = false;
     this.cancelError = '';
  
