@@ -55,6 +55,7 @@ header nav ul li a:hover {
   flex-direction: column;
   gap: 5px;
   cursor: pointer;
+ 
 }
  
 .burger-menu span {

@@ -60,7 +60,8 @@ header nav ul li a:hover {
   flex-direction: column;
   gap: 5px;
   cursor: pointer;
-  z-index: 10; /* Ensures it's above other elements */
+  z-index: 10; 
+  
 }
 
 .burger-menu span {
@@ -88,7 +89,7 @@ header nav {
     background-color: #2c3e50;
     display: none;
     padding: 10px;
-    z-index: 5; /* Ensure above the hero image */
+    z-index: 5;
   }
 
   header nav.active {
