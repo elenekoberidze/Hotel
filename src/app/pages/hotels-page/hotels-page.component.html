@@ -14,6 +14,18 @@
             <li><a routerLink="/hotels" (click)="closeMenu()">Hotels</a></li>
             <li><a routerLink="/rooms" (click)="closeMenu()">Rooms</a></li>
             <li><a routerLink="/booked-rooms" (click)="closeMenu()"> Booked Rooms</a></li>
+             <ng-container *ngIf="!userService.isLoggedIn()">
+          <li><a routerLink="/login">Login</a></li>
+          <li><a routerLink="/register">Sign Up</a></li>
+        </ng-container>
+
+      
+        <ng-container *ngIf="userService.isLoggedIn()">
+          <li>
+            <a routerLink="/profile" class="username">{{ getUserName() }}</a>
+          </li>
+          <li><a href="#" (click)="logout($event)">Logout</a></li>
+        </ng-container>
         </ul>
     </nav>
 </header>

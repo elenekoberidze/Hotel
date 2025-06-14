@@ -4,7 +4,7 @@ import { RoomTypesService } from '../../service/room-types.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
- 
+ import { UserService } from '../../service/user.service';
 import { Booking } from '../../modules/booking.model';
 import { Rooms } from '../../modules/rooms.model';
 import { RoomsService } from '../../service/rooms.service';
@@ -40,7 +40,8 @@ export class RoomsPageComponent implements OnInit {
     private roomsService: RoomsService,
     private selectedRoomsService: SelectedRoomsService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+     public userService: UserService 
   ) {}
  
   ngOnInit(): void {
@@ -48,6 +49,21 @@ export class RoomsPageComponent implements OnInit {
     this.hotelId = routeHotelId ? +routeHotelId : null;
  
     this.getRoomTypes();
+    this.userService.currentUser.subscribe((user) => {
+      if (user && user.firstName && user.lastName) {
+        
+        this.userName = `${user.firstName} ${user.lastName}`;
+      } else if (user && user.firstName) {
+       
+        this.userName = user.firstName;
+      } else if (user && user.phoneNumber) {
+        
+        this.userName = user.phoneNumber;
+      } else {
+        
+        this.userName = 'User';
+      }
+    });
   }
  
   getRoomTypes(): void {
@@ -175,6 +191,20 @@ export class RoomsPageComponent implements OnInit {
         this.bookingError = 'Failed to book the room. Please try again.';
       }
     );
+  }
+    userName: string = 'User'; 
+
+  
+  getUserName(): string {
+    return this.userName; 
+  }
+
+  
+  logout(event?: Event): void {
+    if (event) {
+      event.preventDefault(); 
+    }
+    this.userService.logout(); 
   }
 }
 

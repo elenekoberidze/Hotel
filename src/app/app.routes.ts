@@ -1,6 +1,10 @@
 import { Routes } from '@angular/router';
 import { RoomsPageComponent } from './pages/rooms-page/rooms-page.component';
- 
+import { SignUpComponent } from './pages/sign-up/sign-up.component';
+import { ProfileComponent } from './pages/profile/profile.component';
+import { AuthGuard } from './pages/guards/auth.guard';
+import { LoginComponent } from './pages/login/login.component';
+
 export const routes: Routes = [
   {
     path: '',
@@ -8,7 +12,13 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
    
- 
+  { path: 'login', component: LoginComponent }, 
+  { path: 'register', component: SignUpComponent },
+  {
+    path: 'profile',
+    component:ProfileComponent,
+    canActivate: [AuthGuard], 
+  },
   {
     path: 'home',
     loadComponent: () =>

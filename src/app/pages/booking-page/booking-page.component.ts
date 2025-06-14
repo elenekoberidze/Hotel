@@ -7,6 +7,7 @@ import { Rooms } from '../../modules/rooms.model';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Booking } from '../../modules/booking.model';
+import { UserService } from '../../service/user.service';
  
 @Component({
   selector: 'app-booking-page',
@@ -29,7 +30,7 @@ export class BookingPageComponent implements OnInit {
   roomId: number = 0;
   submitting: boolean = false;
   dateConflict: boolean = false;
- 
+ userName: string = 'User'; 
   
   unavailableDates: string[] = [];
  
@@ -38,11 +39,28 @@ export class BookingPageComponent implements OnInit {
     private roomsService: RoomsService,
     private selectedRoomsService: SelectedRoomsService,
     private bookingService: BookingService,
-    private router: Router
+    private router: Router,
+    public userService: UserService 
+  
   ) {}
  
   ngOnInit(): void {
-    
+   
+     this.userService.currentUser.subscribe((user) => {
+      if (user && user.firstName && user.lastName) {
+        
+        this.userName = `${user.firstName} ${user.lastName}`;
+      } else if (user && user.firstName) {
+        
+        this.userName = user.firstName;
+      } else if (user && user.phoneNumber) {
+       
+        this.userName = user.phoneNumber;
+      } else {
+      
+        this.userName = 'მომხმარებელი';
+      }
+    });
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -326,6 +344,25 @@ export class BookingPageComponent implements OnInit {
  
   onDateChange(): void {
     this.calculateTotalPrice();
+  }
+  
+
+  
+
+  
+ 
+
+  
+  getUserName(): string {
+    return this.userName;
+  }
+
+  
+  logout(event?: Event): void {
+    if (event) {
+      event.preventDefault();
+    }
+    this.userService.logout();
   }
 }
  

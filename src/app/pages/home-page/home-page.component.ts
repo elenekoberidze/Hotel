@@ -2,7 +2,7 @@ import { Component , NgZone, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {  Router, RouterLink } from '@angular/router';
 import { Rooms } from '../../modules/rooms.model';
-
+import { UserService } from '../../service/user.service';
 
 import { CommonModule } from '@angular/common';
 import { HotelsService } from '../../service/hotels.service';
@@ -32,13 +32,14 @@ export class HomePageComponent implements OnInit {
   currentHotel: Hotels | null = null;
   currentIndex = 0;
   isMenuOpen = false;
-
+ userName: string = 'User';
   constructor(
     private roomsService: RoomsService,
     private hotelsService: HotelsService,
     private selectedRoomsService: SelectedRoomsService,
     private router: Router,
-      private ngZone: NgZone
+      private ngZone: NgZone,
+      public userService: UserService
   ) {}
 
   ngOnInit(): void {
@@ -46,6 +47,23 @@ export class HomePageComponent implements OnInit {
     this.roomsService.getRooms().subscribe((data) => {
       this.rooms = data;
       console.log('Rooms:', data);
+
+
+       this.userService.currentUser.subscribe((user) => {
+      if (user && user.firstName && user.lastName) {
+       
+        this.userName = `${user.firstName} ${user.lastName}`;
+      } else if (user && user.firstName) {
+       
+        this.userName = user.firstName;
+      } else if (user && user.phoneNumber) {
+        
+        this.userName = user.phoneNumber;
+      } else {
+        
+        this.userName = 'User';
+      }
+    });
     });
 
     this.hotelsService.getHotels().subscribe(
@@ -84,6 +102,19 @@ export class HomePageComponent implements OnInit {
 
   navigateToBookingPage(room: Rooms): void {
     this.router.navigate(['/booking', room.id]);
+  }
+
+
+  getUserName(): string {
+    return this.userName; 
+  }
+
+  
+  logout(event?: Event): void {
+    if (event) {
+      event.preventDefault(); 
+    }
+    this.userService.logout(); 
   }
 }
 

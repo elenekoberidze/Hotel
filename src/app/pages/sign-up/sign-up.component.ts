@@ -17,7 +17,7 @@ import { UserService } from '../../service/user.service';
   standalone: true, 
   imports: [CommonModule, ReactiveFormsModule, RouterLink], 
 })
-export class RegisterComponent implements OnInit {
+export class SignUpComponent implements OnInit {
  
   registerForm!: FormGroup;
   loading = false; 

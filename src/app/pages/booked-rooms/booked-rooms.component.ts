@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { Booking } from '../../modules/booking.model';
 import { SelectedRoomsService } from '../../service/selected-rooms.service';
 import { FormsModule } from '@angular/forms';
+import { UserService } from '../../service/user.service';
  
 @Component({
   selector: 'app-booked-rooms',
@@ -25,14 +26,14 @@ export class BookedRoomsComponent implements OnInit {
   noUserInfo = false;
   userName = '';
   userPhone = '';
- 
+ userNamee: string = 'User'; 
   
   cancellingBookingId: number | null = null;
   cancelSuccess = false;
   cancelError = '';
  
   constructor(
-    
+    public userService: UserService ,
     private bookingService: BookingService,
     private selectedRoomsService: SelectedRoomsService
   ) {}
@@ -49,6 +50,23 @@ export class BookedRoomsComponent implements OnInit {
     }
  
     this.loadBookings();
+
+
+     this.userService.currentUser.subscribe((user) => {
+      if (user && user.firstName && user.lastName) {
+        
+        this.userName = `${user.firstName} ${user.lastName}`;
+      } else if (user && user.firstName) {
+        
+        this.userName = user.firstName;
+      } else if (user && user.phoneNumber) {
+        
+        this.userName = user.phoneNumber;
+      } else {
+       
+        this.userName = 'User';
+      }
+    });
   }
  
   
@@ -213,5 +231,23 @@ export class BookedRoomsComponent implements OnInit {
  
   closeMenu(): void {
     this.isMenuOpen = false;
+  }
+
+
+   
+
+ 
+  
+ 
+  getUserName(): string {
+    return this.userNamee; 
+  }
+
+ 
+  logout(event?: Event): void {
+    if (event) {
+      event.preventDefault(); 
+    }
+    this.userService.logout(); 
   }
 }
