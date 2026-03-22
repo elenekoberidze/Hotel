@@ -3,10 +3,10 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { RoomsService } from '../../service/rooms.service';
 import { SelectedRoomsService } from '../../service/selected-rooms.service';
 import { BookingService } from '../../service/booking.service';
-import { Rooms } from '../../modules/rooms.model';
+import { Rooms } from '../../models/rooms.model';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Booking } from '../../modules/booking.model';
+import { Booking } from '../../models/booking.model';
 import { UserService } from '../../service/user.service';
  
 @Component({

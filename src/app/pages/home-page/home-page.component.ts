@@ -1,13 +1,13 @@
 import { Component , NgZone, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {  Router, RouterLink } from '@angular/router';
-import { Rooms } from '../../modules/rooms.model';
+import { Rooms } from '../../models/rooms.model';
 import { UserService } from '../../service/user.service';
 
 import { CommonModule } from '@angular/common';
 import { HotelsService } from '../../service/hotels.service';
 import { RoomsService } from '../../service/rooms.service';
-import { Hotels } from '../../modules/hotels.model';
+import { Hotels } from '../../models/hotels.model';
 import { SelectedRoomsService } from '../../service/selected-rooms.service';
 
 

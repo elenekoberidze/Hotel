@@ -9,7 +9,7 @@ import {
   tap,
   throwError,
 } from 'rxjs';
-import { Rooms } from '../modules/rooms.model';
+import { Rooms } from '../models/rooms.model';
  
 @Injectable({
   providedIn: 'root',

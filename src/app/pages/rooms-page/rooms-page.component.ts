@@ -5,8 +5,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
  import { UserService } from '../../service/user.service';
-import { Booking } from '../../modules/booking.model';
-import { Rooms } from '../../modules/rooms.model';
+import { Booking } from '../../models/booking.model';
+import { Rooms } from '../../models/rooms.model';
 import { RoomsService } from '../../service/rooms.service';
 import { SelectedRoomsService } from '../../service/selected-rooms.service';
  

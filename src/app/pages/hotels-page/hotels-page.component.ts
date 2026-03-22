@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 import { HotelsService } from '../../service/hotels.service';
 import { CommonModule } from '@angular/common';
 import { CityService } from '../../service/city.service';
-import { Hotels } from '../../modules/hotels.model';
+import { Hotels } from '../../models/hotels.model';
 import { UserService } from '../../service/user.service';
 @Component({
   selector: 'app-hotel',

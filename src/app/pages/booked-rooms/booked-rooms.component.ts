@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 import { CityService } from '../../service/city.service';
 import { BookingService } from '../../service/booking.service';
 import { CommonModule } from '@angular/common';
-import { Booking } from '../../modules/booking.model';
+import { Booking } from '../../models/booking.model';
 import { SelectedRoomsService } from '../../service/selected-rooms.service';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../service/user.service';
