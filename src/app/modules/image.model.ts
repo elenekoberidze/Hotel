@@ -1,12 +1,11 @@
 
-export interface HotelImageRequest {
+export interface HotelImage {
   hotelID: number;
   imageURL: string;
   isPrimary: boolean;
 }
 
-
-export interface RoomImageRequest {
+export interface RoomImage {
   roomID: number;
   imageURL: string;
 }

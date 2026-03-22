@@ -7,12 +7,10 @@ export interface RegisterRequest {
   password: string;
 }
 
-
 export interface LoginRequest {
   email: string;
   password: string;
 }
-
 
 export interface AuthResponse {
   token: string;
@@ -22,7 +20,6 @@ export interface AuthResponse {
   role: 'Admin' | 'Customer';
 }
 
-
 export interface UserDTO {
   username: string;
   email: string;
@@ -31,10 +28,3 @@ export interface UserDTO {
 }
 
 
-export interface UserProfile {
-  address?: string;
-  city?: string;
-  dateOfBirth?: string;   
-  avatarUrl?: string;
-  bio?: string;
-}
