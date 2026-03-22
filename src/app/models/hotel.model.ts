@@ -2,7 +2,7 @@ import { Room } from './room.model';
 
 export type HotelStarRating = 0 | 1 | 2 | 3 | 4 | 5;
 
-export type HotelStatus = 'Active' | 'UnderRenovation' | 'Inactive' | 'OnBoarding';
+export type HotelStatus = 0 | 1;
 
 export interface Hotel {
   hotelID: number;
