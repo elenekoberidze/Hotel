@@ -5,7 +5,7 @@ import { HotelsService } from '../../service/hotels.service';
 import { CommonModule } from '@angular/common';
 import { CityService } from '../../service/city.service';
 import { Hotels } from '../../models/hotels.model';
-import { UserService } from '../../service/user.service';
+import { UserService } from '../../service/auth.service';
 @Component({
   selector: 'app-hotel',
   templateUrl: './hotels-page.component.html',

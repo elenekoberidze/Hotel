@@ -2,7 +2,7 @@ import { Component , NgZone, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {  Router, RouterLink } from '@angular/router';
 import { Rooms } from '../../models/rooms.model';
-import { UserService } from '../../service/user.service';
+import { UserService } from '../../service/auth.service';
 
 import { CommonModule } from '@angular/common';
 import { HotelsService } from '../../service/hotels.service';

@@ -4,7 +4,7 @@ import { RoomTypesService } from '../../service/room-types.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
- import { UserService } from '../../service/user.service';
+ import { UserService } from '../../service/auth.service';
 import { Booking } from '../../models/booking.model';
 import { Rooms } from '../../models/rooms.model';
 import { RoomsService } from '../../service/rooms.service';

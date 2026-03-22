@@ -7,7 +7,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { UserService } from '../../service/user.service';
+import { UserService } from '../../service/auth.service';
 
 @Component({
   selector: 'app-login',

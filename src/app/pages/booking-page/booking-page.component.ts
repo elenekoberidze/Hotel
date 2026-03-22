@@ -7,7 +7,7 @@ import { Rooms } from '../../models/rooms.model';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Booking } from '../../models/booking.model';
-import { UserService } from '../../service/user.service';
+import { UserService } from '../../service/auth.service';
  
 @Component({
   selector: 'app-booking-page',

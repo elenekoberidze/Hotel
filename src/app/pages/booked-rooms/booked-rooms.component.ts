@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
 import { Booking } from '../../models/booking.model';
 import { SelectedRoomsService } from '../../service/selected-rooms.service';
 import { FormsModule } from '@angular/forms';
-import { UserService } from '../../service/user.service';
+import { UserService } from '../../service/auth.service';
  
 @Component({
   selector: 'app-booked-rooms',
