@@ -1,70 +1,77 @@
 <body>
 <header>
-    <div class="logo">
-        <h1>Hotel Booking</h1>
-    </div>
-    <div class="burger-menu" (click)="toggleMenu()">
-    <span></span>
-    <span></span>
-    <span></span>
+  <div class="logo">
+    <h1>Hotel Booking</h1>
   </div>
-    <nav  [class.active]="isMenuOpen">
-        <ul>
-            <li><a routerLink="/home" (click)="closeMenu()">Home</a></li>
-            <li><a routerLink="/hotels" (click)="closeMenu()">Hotels</a></li>
-            <li><a routerLink="/rooms" (click)="closeMenu()">Rooms</a></li>
-            <li><a routerLink="/booked-rooms" (click)="closeMenu()"> Booked Rooms</a></li>
-             <ng-container *ngIf="!userService.isLoggedIn()">
-          <li><a routerLink="/login">Login</a></li>
-          <li><a routerLink="/register">Sign Up</a></li>
-        </ng-container>
-
-      
-        <ng-container *ngIf="userService.isLoggedIn()">
-          <li>
-            <a routerLink="/profile" class="username">{{ getUserName() }}</a>
-          </li>
-          <li><a href="#" (click)="logout($event)">Logout</a></li>
-        </ng-container>
-        </ul>
-    </nav>
+  <div class="burger-menu" (click)="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+  <nav [class.active]="isMenuOpen">
+    <ul>
+      <li><a routerLink="/home" (click)="closeMenu()">Home</a></li>
+      <li><a routerLink="/hotels" (click)="closeMenu()">Hotels</a></li>
+      <li><a routerLink="/rooms" (click)="closeMenu()">Rooms</a></li>
+      <li><a routerLink="/booked-rooms" (click)="closeMenu()">Booked Rooms</a></li>
+      <ng-container *ngIf="!authService.isLoggedIn()">
+        <li><a routerLink="/login">Login</a></li>
+        <li><a routerLink="/register">Sign Up</a></li>
+      </ng-container>
+      <ng-container *ngIf="authService.isLoggedIn()">
+        <li><a routerLink="/profile" class="username">{{ username }}</a></li>
+        <li><a href="#" (click)="logout($event)">Logout</a></li>
+      </ng-container>
+    </ul>
+  </nav>
 </header>
 
-
 <section class="hotels">
-    <div class="container">
-        <h1>Explore Our Hotels</h1>
-        <p>Find the best hotels in top cities and book your stay now</p>
+  <div class="container">
+    <h1>Explore Our Hotels</h1>
+    <p>Find the best hotels in top cities and book your stay now</p>
 
-    
-        <div class="filters">
-            <label for="city">Chosen city:</label>
-            <p>{{ city  }}</p> 
-          </div>
-          
-          
+   
+    <div class="filters">
+      <label>Filter by city:</label>
+      <div class="city-buttons">
+        <button
+          [class.active]="selectedCity === ''"
+          (click)="filterByCity('')">All</button>
+        <button
+          *ngFor="let city of cities"
+          [class.active]="selectedCity === city"
+          (click)="filterByCity(city)">{{ city }}</button>
+      </div>
+    </div>
 
-       
-        <div class="hotel-cards">
-  <div *ngFor="let hotel of hotels" class="hotel-card">
-    <img [src]="hotel.featuredImage" alt="{{ hotel.name }}" />
-    <h3>{{ hotel.name }}</h3>
-    <p class="city">{{ hotel.city }}</p>
-    <p class="address">{{ hotel.address }}</p>
-    <button [routerLink]="['/rooms', hotel.id]">View Rooms</button>
+    <div *ngIf="loading" class="loading">Loading hotels...</div>
+    <div *ngIf="error" class="error-message">{{ error }}</div>
+
+    <div class="hotel-cards">
+      <div *ngFor="let hotel of hotels" class="hotel-card">
+        <img [src]="hotel.primaryImage" alt="{{ hotel.name }}" />
+        <h3>{{ hotel.name }}</h3>
+        <p class="city">{{ hotel.city }}</p>
+        <p class="address">{{ hotel.address }}</p>
+        <div class="hotel-meta">
+          <span>⭐ {{ hotel.starRating }}</span>
+          <span *ngIf="hotel.averageReviewScore > 0">
+            {{ hotel.averageReviewScore }}/5 reviews
+          </span>
+        </div>
+        <button [routerLink]="['/rooms', hotel.hotelID]">View Rooms</button>
+      </div>
+    </div>
+
+    <div *ngIf="!loading && hotels.length === 0" class="no-results">
+      No hotels found.
+    </div>
   </div>
-</div>
-
-    </div>
-
-   
-   
 </section>
+
 <footer>
-    <div class="container">
-        <p>&copy; 2025 Hotel Booking. All rights reserved.</p>
-    </div>
+  <div class="container">
+    <p>&copy; 2025 Hotel Booking. All rights reserved.</p>
+  </div>
 </footer>
 </body>
-
   

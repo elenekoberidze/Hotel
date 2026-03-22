@@ -1,15 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterLink, Router } from '@angular/router';
-import { RoomTypesService } from '../../service/room-types.service';
+import { ActivatedRoute, RouterLink, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
- import { UserService } from '../../service/auth.service';
-import { Booking } from '../../models/booking.model';
-import { Rooms } from '../../models/rooms.model';
-import { RoomsService } from '../../service/rooms.service';
-import { SelectedRoomsService } from '../../service/selected-rooms.service';
- 
+import { RoomService } from '../../service/rooms.service';
+import { AuthService } from '../../service/auth.service';
+import { Room, RoomType, RoomFilter } from '../../models';
+
 @Component({
   selector: 'app-rooms-page',
   standalone: true,
@@ -18,197 +14,94 @@ import { SelectedRoomsService } from '../../service/selected-rooms.service';
   styleUrl: './rooms-page.component.css',
 })
 export class RoomsPageComponent implements OnInit {
-  roomTypes: Rooms[] = [];
-  availableRooms: any[] = [];
-  apiResponse: Rooms[] = [];
-  priceRange: number = 1000;
-  checkInDate: string = '';
-  checkOutDate: string = '';
-  selectedRoomType: string = '';
-  maxPrice: number = 1000;
+  rooms: Room[] = [];
+  roomTypes: string[] = [];
   hotelId: number | null = null;
+  loading = false;
+  error = '';
   isMenuOpen = false;
- 
-  customerName: string = '';
-  customerPhone: string = '';
-  selectedRoomId: number | null = null;
-  bookingSuccess: boolean = false;
-  bookingError: string = '';
- 
+
+  
+  checkInDate = '';
+  checkOutDate = '';
+  selectedRoomType = '';
+  maxPrice: number | null = null;
+  minPrice: number | null = null;
+
   constructor(
-    private roomTypesService: RoomTypesService,
-    private roomsService: RoomsService,
-    private selectedRoomsService: SelectedRoomsService,
+    private roomService: RoomService,
     private route: ActivatedRoute,
     private router: Router,
-     public userService: UserService 
+    public authService: AuthService
   ) {}
- 
+
   ngOnInit(): void {
     const routeHotelId = this.route.snapshot.paramMap.get('hotelId');
     this.hotelId = routeHotelId ? +routeHotelId : null;
- 
-    this.getRoomTypes();
-    this.userService.currentUser.subscribe((user) => {
-      if (user && user.firstName && user.lastName) {
-        
-        this.userName = `${user.firstName} ${user.lastName}`;
-      } else if (user && user.firstName) {
-       
-        this.userName = user.firstName;
-      } else if (user && user.phoneNumber) {
-        
-        this.userName = user.phoneNumber;
-      } else {
-        
-        this.userName = 'User';
-      }
-    });
+
+    this.loadRooms();
+    this.loadRoomTypes();
   }
- 
-  getRoomTypes(): void {
-    this.roomsService.getRooms().subscribe(
-      (data) => {
-        console.log('Rooms fetched:', data);
- 
-        this.apiResponse = this.hotelId
-          ? data.filter((room) => room.hotelId === this.hotelId)
-          : data;
- 
-        this.roomTypes = [...this.apiResponse];
-        this.availableRooms = [...this.apiResponse];
- 
-        this.maxPrice = Math.max(
-          ...this.apiResponse.map((room) => room.pricePerNight),
-          1000
-        );
+
+  loadRooms(): void {
+    this.loading = true;
+    this.error = '';
+
+    const filter: RoomFilter = {
+      hotelId:   this.hotelId ?? undefined,
+      checkIn:   this.checkInDate   || undefined,
+      checkOut:  this.checkOutDate  || undefined,
+      roomType:  this.selectedRoomType || undefined,
+      maxPrice:  this.maxPrice  ?? undefined,
+      minPrice:  this.minPrice  ?? undefined,
+    };
+
+    this.roomService.getRooms(filter).subscribe({
+      next: (response) => {
+        this.rooms = response.rooms;
+        this.loading = false;
       },
-      (error) => {
-        console.error('Error fetching rooms:', error);
-      }
-    );
-  }
- 
-  onRoomTypeChange(): void {
-    this.filterRooms();
-  }
- 
-  filterRooms(): void {
-    this.availableRooms = this.apiResponse.filter((room: any) => {
-      const matchesPrice = room.pricePerNight <= this.priceRange;
-      const matchesDates = this.isRoomAvailable(
-        room,
-        this.checkInDate,
-        this.checkOutDate
-      );
-      const matchesType =
-        !this.selectedRoomType || room.id === +this.selectedRoomType;
-      return matchesPrice && matchesDates && matchesType;
+      error: (err) => {
+        this.error = 'Failed to load rooms.';
+        this.loading = false;
+        console.error(err);
+      },
     });
   }
- 
-  isRoomAvailable(room: any, checkIn: string, checkOut: string): boolean {
-    if (!checkIn || !checkOut) {
-      return true;
-    }
- 
-    const checkInDate = new Date(checkIn);
-    const checkOutDate = new Date(checkOut);
- 
-    return room.bookedDates.every((bookedDate: any) => {
-      const bookedDateObj = new Date(bookedDate.date);
-      return bookedDateObj < checkInDate || bookedDateObj > checkOutDate;
+
+  loadRoomTypes(): void {
+    this.roomService.getRoomTypes().subscribe({
+      next: (data) => (this.roomTypes = data),
+      error: (err) => console.error('Error fetching room types:', err),
     });
   }
- 
-  onDateChange(): void {
-    if (this.checkInDate && this.checkOutDate) {
-      this.filterRooms();
-    }
+
+  onFilterChange(): void {
+    this.loadRooms();
   }
- 
-  onPriceChange(): void {
-    this.filterRooms();
-  }
- 
+
   resetFilters(): void {
-    this.selectedRoomType = '';
-    this.priceRange = 1000;
     this.checkInDate = '';
     this.checkOutDate = '';
-    this.availableRooms = [...this.apiResponse];
-  }
- 
-  toggleMenu(): void {
-    this.isMenuOpen = !this.isMenuOpen;
-  }
- 
-  closeMenu(): void {
-    this.isMenuOpen = false;
-  }
- 
-  bookRoom(roomId: number): void {
-    this.router.navigate(['/booking', roomId]);
-  }
- 
-  quickBookRoom(room: Rooms): void {
-    if (!this.checkInDate || !this.checkOutDate) {
-      this.bookingError = 'Please select check-in and check-out dates';
-      return;
-    }
- 
-    
-    const checkIn = new Date(this.checkInDate);
-    const checkOut = new Date(this.checkOutDate);
-    const nightsStay = Math.ceil(
-      (checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24)
-    );
- 
-    const totalPrice = room.pricePerNight * nightsStay;
- 
-    const booking: Booking = {
-      id: 0,
-      roomID: room.id,
-      checkInDate: this.checkInDate,
-      checkOutDate: this.checkOutDate,
-      totalPrice: totalPrice,
-      isConfirmed: true,
-      customerName: 'Guest',
-      customerPhone: '555-555-5555', 
-    };
- 
-    this.selectedRoomsService.bookRoom(booking).subscribe(
-      (response) => {
-        console.log('Booking successful:', response);
-        this.bookingSuccess = true;
-        this.bookingError = '';
-        setTimeout(() => {
-          this.bookingSuccess = false;
-        }, 3000);
-      },
-      (error) => {
-        console.error('Booking error:', error);
-        this.bookingError = 'Failed to book the room. Please try again.';
-      }
-    );
-  }
-    userName: string = 'User'; 
-
-  
-  getUserName(): string {
-    return this.userName; 
+    this.selectedRoomType = '';
+    this.maxPrice = null;
+    this.minPrice = null;
+    this.loadRooms();
   }
 
-  
+  bookRoom(roomID: number): void {
+    this.router.navigate(['/booking', roomID]);
+  }
+
+  toggleMenu(): void { this.isMenuOpen = !this.isMenuOpen; }
+  closeMenu(): void  { this.isMenuOpen = false; }
+
   logout(event?: Event): void {
-    if (event) {
-      event.preventDefault(); 
-    }
-    this.userService.logout(); 
+    event?.preventDefault();
+    this.authService.logout();
+  }
+
+  get username(): string {
+    return this.authService.currentUser?.username ?? 'User';
   }
 }
-
-
-  
-
-

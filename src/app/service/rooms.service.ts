@@ -34,7 +34,7 @@ export class RoomService {
     return this.http.get<Room>(`${this.apiUrl}/GetBy${id}`);
   }
 
-  getRoomTypes(): Observable<RoomType[]> {
-    return this.http.get<RoomType[]>(`${this.apiUrl}/GetRoomTypes`);
-  }
+ getRoomTypes(): Observable<string[]> {
+  return this.http.get<string[]>(`${this.apiUrl}/GetRoomTypes`);
+}
 }

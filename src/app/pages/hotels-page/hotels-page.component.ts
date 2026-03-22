@@ -1,11 +1,10 @@
-import { Component , OnInit} from '@angular/core';
-
+import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { HotelsService } from '../../service/hotels.service';
 import { CommonModule } from '@angular/common';
-import { CityService } from '../../service/city.service';
-import { Hotels } from '../../models/hotels.model';
-import { UserService } from '../../service/auth.service';
+import { HotelService } from '../../service/hotels.service';
+import { AuthService } from '../../service/auth.service';
+import { Hotel } from '../../models';
+
 @Component({
   selector: 'app-hotel',
   templateUrl: './hotels-page.component.html',
@@ -14,70 +13,75 @@ import { UserService } from '../../service/auth.service';
   standalone: true,
 })
 export class HotelsPageComponent implements OnInit {
-  hotels: Hotels[]=[];
-  city:Hotels[]=[];
-  
-  constructor(private hotelsService: HotelsService, private cityService: CityService,  public userService: UserService ) { 
-    this.getCity();
-  }
+  hotels: Hotel[] = [];
+  cities: string[] = [];
+  selectedCity = '';
+  loading = false;
+  error = '';
+
+  constructor(
+    private hotelService: HotelService,
+    public authService: AuthService
+  ) {}
+
   ngOnInit(): void {
-    this.hotelsService.getHotels().subscribe((data) => {
-      this.hotels = data;
-    })
-     this.userService.currentUser.subscribe((user) => {
-      if (user && user.firstName && user.lastName) {
-        
-        this.userName = `${user.firstName} ${user.lastName}`;
-      } else if (user && user.firstName) {
-       
-        this.userName = user.firstName;
-      } else if (user && user.phoneNumber) {
-        
-        this.userName = user.phoneNumber;
-      } else {
-        
-        this.userName = 'User';
-      }
+    this.loadHotels();
+    this.loadCities();
+  }
+
+  loadHotels(): void {
+    this.loading = true;
+    this.hotelService.getHotels().subscribe({
+      next: (response) => {
+        this.hotels = response.hotels;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = 'Failed to load hotels.';
+        this.loading = false;
+        console.error(err);
+      },
     });
   }
 
- 
-  getCity(): void {
-    this.cityService.getCitys().subscribe(
-      (data) => {
-        console.log('City data received:', data); 
-        this.city = data;
-      },
-      (error) => {
-        console.error('Error fetching cities:', error); 
-      }
-    );
+  loadCities(): void {
+    this.hotelService.getCities().subscribe({
+      next: (data) => (this.cities = data),
+      error: (err) => console.error('Error fetching cities:', err),
+    });
   }
+
+  filterByCity(city: string): void {
+    this.selectedCity = city;
+    if (!city) {
+      this.loadHotels();
+      return;
+    }
+
+    this.loading = true;
+    this.hotelService.getHotelsByCity(city).subscribe({
+      next: (data) => {
+        this.hotels = data;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = 'Failed to filter hotels.';
+        this.loading = false;
+      },
+    });
+  }
+
   isMenuOpen = false;
 
-  toggleMenu(): void {
-    this.isMenuOpen = !this.isMenuOpen;
-  }
+  toggleMenu(): void { this.isMenuOpen = !this.isMenuOpen; }
+  closeMenu(): void  { this.isMenuOpen = false; }
 
-  closeMenu(): void {
-    this.isMenuOpen = false;
-  }
-     userName: string = 'User'; 
-
-  
-  
- 
-
-  
-  getUserName(): string {
-    return this.userName; 
-  }
-
-  
   logout(event?: Event): void {
-    if (event) {
-      event.preventDefault(); 
-    }
-    this.userService.logout(); 
+    event?.preventDefault();
+    this.authService.logout();
+  }
+
+  get username(): string {
+    return this.authService.currentUser?.username ?? 'User';
   }
 }

@@ -1,70 +1,26 @@
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <div class="login-container">
   <h2>Login</h2>
-
-  <div *ngIf="success" class="success-message">
-    Login was successful!
-  </div>
-
-  <div *ngIf="error" class="error-message">
-    {{ error }}
-  </div>
-
+  <div *ngIf="success" class="success-message">Login was successful!</div>
+  <div *ngIf="error" class="error-message">{{ error }}</div>
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
     <div class="form-group">
-      <label for="phoneNumber">Phone Number</label>
-      <input
-        type="text"
-        id="phoneNumber"
-        formControlName="phoneNumber"
-        placeholder="Enter your phone number"
-      />
-
-      <div
-        *ngIf="f['phoneNumber'].touched && f['phoneNumber'].errors"
-        class="validation-error"
-      >
-        <div *ngIf="f['phoneNumber'].errors['required']">
-          Phone number is required
-        </div>
+      <label for="email">Email</label>
+      <input type="email" id="email" formControlName="email" placeholder="Enter your email" />
+      <div *ngIf="f['email'].touched && f['email'].errors" class="validation-error">
+        <div *ngIf="f['email'].errors['required']">Email is required</div>
+        <div *ngIf="f['email'].errors['email']">Invalid email format</div>
       </div>
     </div>
-
     <div class="form-group">
       <label for="password">Password</label>
-      <input
-        type="password"
-        id="password"
-        formControlName="password"
-        placeholder="Enter your password"
-      />
-
-      <div
-        *ngIf="f['password'].touched && f['password'].errors"
-        class="validation-error"
-      >
+      <input type="password" id="password" formControlName="password" placeholder="Enter your password" />
+      <div *ngIf="f['password'].touched && f['password'].errors" class="validation-error">
         <div *ngIf="f['password'].errors['required']">Password is required</div>
       </div>
     </div>
-
     <div class="buttons">
-      <button type="submit" [disabled]="loginForm.invalid || loading" >
-        {{ loading ? "Loading..." : "Login" }}
-      </button>
+      <button type="submit" [disabled]="loginForm.invalid || loading">{{ loading ? "Loading..." : "Login" }}</button>
       <a routerLink="/register">Don't have an account? Register</a>
     </div>
   </form>

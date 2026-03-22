@@ -19,8 +19,9 @@ export interface Hotel {
 }
 
 export interface PagedHotelResponse {
-  data: Hotel[];
+  hotels: Hotel[];
   totalCount: number;
   page: number;
   pageSize: number;
+  totalPages: number;
 }

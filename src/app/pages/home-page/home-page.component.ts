@@ -1,15 +1,13 @@
-import { Component , NgZone, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import {  Router, RouterLink } from '@angular/router';
-import { Rooms } from '../../models/rooms.model';
-import { UserService } from '../../service/auth.service';
-
+import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { HotelsService } from '../../service/hotels.service';
-import { RoomsService } from '../../service/rooms.service';
-import { Hotels } from '../../models/hotels.model';
-import { SelectedRoomsService } from '../../service/selected-rooms.service';
-
+import { HotelService } from '../../service/hotels.service';
+import { RoomService } from '../../service/rooms.service';
+import { AmenityService } from '../../service/amenity.service';
+import { ReviewService } from '../../service/review.service';
+import { AuthService } from '../../service/auth.service';
+import { Hotel, Room, Amenity, Review } from '../../models';
 
 @Component({
   selector: 'app-home-page',
@@ -17,73 +15,60 @@ import { SelectedRoomsService } from '../../service/selected-rooms.service';
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css',
   standalone: true,
-  template: `
-    <div *ngFor="let room of rooms">
-      <h3>{{ room.name }}</h3>
-      <p>Price: {{ room.pricePerNight }}</p>
-      <p>Guests: {{ room.maximumGuests }}</p>
-      <img *ngFor="let image of room.images" [src]="image.source" [alt]="room.name" />
-    </div>
-  `,
 })
 export class HomePageComponent implements OnInit {
- rooms: Rooms[] = [];
-  hotels: Hotels[] = [];
-  currentHotel: Hotels | null = null;
+  rooms: Room[] = [];
+  hotels: Hotel[] = [];
+  amenities: Amenity[] = [];
+  reviews: Review[] = [];
+  currentHotel: Hotel | null = null;
   currentIndex = 0;
   isMenuOpen = false;
- userName: string = 'User';
+
   constructor(
-    private roomsService: RoomsService,
-    private hotelsService: HotelsService,
-    private selectedRoomsService: SelectedRoomsService,
+    private roomService: RoomService,
+    private hotelService: HotelService,
+    private amenityService: AmenityService,
+    private reviewService: ReviewService,
     private router: Router,
-      private ngZone: NgZone,
-      public userService: UserService
+    private ngZone: NgZone,
+    public authService: AuthService
   ) {}
 
   ngOnInit(): void {
-    
-    this.roomsService.getRooms().subscribe((data) => {
-      this.rooms = data;
-      console.log('Rooms:', data);
-
-
-       this.userService.currentUser.subscribe((user) => {
-      if (user && user.firstName && user.lastName) {
-       
-        this.userName = `${user.firstName} ${user.lastName}`;
-      } else if (user && user.firstName) {
-       
-        this.userName = user.firstName;
-      } else if (user && user.phoneNumber) {
-        
-        this.userName = user.phoneNumber;
-      } else {
-        
-        this.userName = 'User';
-      }
-    });
+    this.roomService.getRooms({ pageSize: 3 }).subscribe({
+      next: (response) => (this.rooms = response.rooms),
+      error: (err) => console.error('Error fetching rooms:', err),
     });
 
-    this.hotelsService.getHotels().subscribe(
-      (data) => {
-        this.hotels = data;
-        console.log('Hotels:', data);
+    this.hotelService.getHotels().subscribe({
+      next: (response) => {
+        this.hotels = response.hotels;
         if (this.hotels.length > 0) {
-          this.currentHotel = this.hotels[this.currentIndex];
+          this.currentHotel = this.hotels[0];
           this.startBackgroundRotation();
+          this.loadReviews(this.hotels[0].hotelID);
         }
       },
-      (error) => console.error('Error fetching hotels:', error)
-    );
+      error: (err) => console.error('Error fetching hotels:', err),
+    });
+
+    this.amenityService.getAmenities().subscribe({
+      next: (data) => (this.amenities = data),
+      error: (err) => console.error('Error fetching amenities:', err),
+    });
   }
 
- startBackgroundRotation(): void {
-   
+  loadReviews(hotelId: number): void {
+    this.reviewService.getHotelReviews(hotelId).subscribe({
+      next: (data) => (this.reviews = data.slice(0, 6)),
+      error: (err) => console.error('Error fetching reviews:', err),
+    });
+  }
+
+  startBackgroundRotation(): void {
     this.ngZone.runOutsideAngular(() => {
       setInterval(() => {
-        
         this.ngZone.run(() => {
           this.currentIndex = (this.currentIndex + 1) % this.hotels.length;
           this.currentHotel = this.hotels[this.currentIndex];
@@ -92,30 +77,23 @@ export class HomePageComponent implements OnInit {
     });
   }
 
-  toggleMenu(): void {
-    this.isMenuOpen = !this.isMenuOpen;
+  navigateToBookingPage(room: Room): void {
+    this.router.navigate(['/booking', room.roomID]);
   }
 
-  closeMenu(): void {
-    this.isMenuOpen = false;
+  getStars(rating: number): string {
+    return '★'.repeat(rating) + '☆'.repeat(5 - rating);
   }
 
-  navigateToBookingPage(room: Rooms): void {
-    this.router.navigate(['/booking', room.id]);
-  }
+  toggleMenu(): void { this.isMenuOpen = !this.isMenuOpen; }
+  closeMenu(): void  { this.isMenuOpen = false; }
 
-
-  getUserName(): string {
-    return this.userName; 
-  }
-
-  
   logout(event?: Event): void {
-    if (event) {
-      event.preventDefault(); 
-    }
-    this.userService.logout(); 
+    event?.preventDefault();
+    this.authService.logout();
+  }
+
+  get username(): string {
+    return this.authService.currentUser?.username ?? 'User';
   }
 }
-
-

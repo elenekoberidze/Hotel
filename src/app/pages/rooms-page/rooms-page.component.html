@@ -1,128 +1,130 @@
 <body>
-  <header>
-    <div class="logo">
-      <h1>Hotel Booking</h1>
-    </div>
-    <div class="burger-menu" (click)="toggleMenu()">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-    <nav [class.active]="isMenuOpen">
-      <ul>
-        <li><a routerLink="/home" (click)="closeMenu()">Home</a></li>
-        <li><a routerLink="/hotels" (click)="closeMenu()">Hotels</a></li>
-        <li><a routerLink="/rooms" (click)="closeMenu()">Rooms</a></li>
-        <li>
-          <a routerLink="/booked-rooms" (click)="closeMenu()"> Booked Rooms</a>
+<header>
+  <div class="logo">
+    <h1>Hotel Booking</h1>
+  </div>
+  <div class="burger-menu" (click)="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+  <nav [class.active]="isMenuOpen">
+    <ul>
+      <li><a routerLink="/home" (click)="closeMenu()">Home</a></li>
+      <li><a routerLink="/hotels" (click)="closeMenu()">Hotels</a></li>
+      <li><a routerLink="/rooms" (click)="closeMenu()">Rooms</a></li>
+      <li><a routerLink="/booked-rooms" (click)="closeMenu()">Booked Rooms</a></li>
+      <ng-container *ngIf="!authService.isLoggedIn()">
+        <li><a routerLink="/login">Login</a></li>
+        <li><a routerLink="/register">Sign Up</a></li>
+      </ng-container>
+      <ng-container *ngIf="authService.isLoggedIn()">
+        <li><a routerLink="/profile" class="username">{{ username }}</a></li>
+        <li><a href="#" (click)="logout($event)">Logout</a></li>
+      </ng-container>
+    </ul>
+  </nav>
+</header>
 
-        </li>
-         <ng-container *ngIf="!userService.isLoggedIn()">
-          <li><a routerLink="/login">Login</a></li>
-          <li><a routerLink="/register">Sign Up</a></li>
-        </ng-container>
+<section class="rooms">
+  <div class="container">
+    <h1>Choose Your Perfect Room</h1>
+    <p>Explore all available rooms, filter by your preferences, and book your stay</p>
 
-      
-        <ng-container *ngIf="userService.isLoggedIn()">
-          <li>
-            <a routerLink="/profile" class="username">{{ getUserName() }}</a>
-          </li>
-          <li><a href="#" (click)="logout($event)">Logout</a></li>
-        </ng-container>
-      </ul>
-    </nav>
-  </header>
-  <section class="rooms">
-    <div class="container">
-      <h1>Choose Your Perfect Room</h1>
-      <p>
-        Explore all available rooms, filter by your preferences, and book your
-        stay
-      </p>
- 
-      <div class="filters">
-        <div class="filter-group">
-          <label for="room-type">Room Type:</label>
-          <select
-            id="room-type"
-            [(ngModel)]="selectedRoomType"
-            (change)="onRoomTypeChange()"
-          >
-            <option value="">All Types</option>
-            <option *ngFor="let room of roomTypes" [value]="room.id">
-              {{ room.name }}
-            </option>
-          </select>
-        </div>
- 
-        <div class="filter-group">
-          <label for="price-range">Price Range:</label>
-          <input
-            type="range"
-            id="price-range"
-            [(ngModel)]="priceRange"
-            min="0"
-            max="1000"
-            value="500"
-            (input)="onPriceChange()"
-          />
-          <span id="priceValue">{{ priceRange }}</span>
-        </div>
- 
-        <div class="filter-group">
-          <label for="check-in">Check-In:</label>
-          <input
-            id="check-in"
-            type="date"
-            [(ngModel)]="checkInDate"
-            (change)="onDateChange()"
-          />
-        </div>
- 
-        <div class="filter-group">
-          <label for="check-out">Check-Out:</label>
-          <input
-            id="check-out"
-            type="date"
-            [(ngModel)]="checkOutDate"
-            (change)="onDateChange()"
-          />
-        </div>
- 
-        <div class="filter-group">
-          <button class="reset-filters" (click)="resetFilters()">
-            Reset Filters
-          </button>
-        </div>
+    <div class="filters">
+      <div class="filter-group">
+        <label for="room-type">Room Type:</label>
+        <select id="room-type" [(ngModel)]="selectedRoomType" (change)="onFilterChange()">
+          <option value="">All Types</option>
+          <option *ngFor="let type of roomTypes" [value]="type">{{ type }}</option>
+        </select>
       </div>
- 
-      <div class="room-cards">
-        <div class="room-card" *ngFor="let room of availableRooms">
-          <img [src]="room.images[0]?.source" alt="Room Image" />
-          <h3>{{ room.name }}</h3>
-          <p class="price">${{ room.pricePerNight }}/night</p>
-          <div class="room-buttons">
-            <button [routerLink]="['/booking', room.id]" class="book-now-btn"
-              >Book Now</button
-            >
-          </div>
-        </div>
+
+      <div class="filter-group">
+        <label for="min-price">Min Price:</label>
+        <input
+          type="number"
+          id="min-price"
+          [(ngModel)]="minPrice"
+          placeholder="0"
+          (change)="onFilterChange()"
+        />
       </div>
- 
-      <div class="booking-notification success" *ngIf="bookingSuccess">
-        Room booked successfully!
+
+      <div class="filter-group">
+        <label for="max-price">Max Price:</label>
+        <input
+          type="number"
+          id="max-price"
+          [(ngModel)]="maxPrice"
+          placeholder="Any"
+          (change)="onFilterChange()"
+        />
       </div>
- 
-      <div class="booking-notification error" *ngIf="bookingError">
-        {{ bookingError }}
+
+      <div class="filter-group">
+        <label for="check-in">Check-In:</label>
+        <input
+          id="check-in"
+          type="date"
+          [(ngModel)]="checkInDate"
+          (change)="onFilterChange()"
+        />
+      </div>
+
+      <div class="filter-group">
+        <label for="check-out">Check-Out:</label>
+        <input
+          id="check-out"
+          type="date"
+          [(ngModel)]="checkOutDate"
+          (change)="onFilterChange()"
+        />
+      </div>
+
+      <div class="filter-group">
+        <button class="reset-filters" (click)="resetFilters()">Reset Filters</button>
       </div>
     </div>
-  </section>
-  <footer>
-    <div class="container-footer">
-      <p>&copy; 2025 Hotel Booking. All rights reserved.</p>
+
+    <div *ngIf="loading" class="loading">Loading rooms...</div>
+    <div *ngIf="error" class="error-message">{{ error }}</div>
+
+    <div class="room-cards">
+      <div class="room-card" *ngFor="let room of rooms">
+        <img
+          *ngIf="room.images.length > 0"
+          [src]="room.images[0]"
+          alt="Room Image"
+        />
+        <h3>{{ room.roomNumber }}</h3>
+        <p class="price">${{ room.price }}/night</p>
+        <p class="type">{{ room.roomType }}</p>
+        <p class="hotel">{{ room.hotelName }} — {{ room.city }}</p>
+        <div class="amenities" *ngIf="room.amenities.length > 0">
+          <span *ngFor="let amenity of room.amenities" class="amenity-tag">
+            {{ amenity }}
+          </span>
+        </div>
+        <p *ngIf="room.isAvailable" class="available">Available</p>
+        <p *ngIf="!room.isAvailable" class="unavailable">Not Available</p>
+        <div class="room-buttons">
+          <button
+            [routerLink]="['/booking', room.roomID]"
+            class="book-now-btn"
+            [disabled]="!room.isAvailable"
+          >Book Now</button>
+        </div>
+      </div>
     </div>
-  </footer>
+
+    <div *ngIf="!loading && rooms.length === 0" class="no-results">
+      No rooms found for your selected filters.
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container-footer">
+    <p>&copy; 2025 Hotel Booking. All rights reserved.</p>
+  </div>
+</footer>
 </body>
-
-  

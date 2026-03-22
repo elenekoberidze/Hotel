@@ -28,7 +28,7 @@ export interface Room {
 }
 
 export interface PagedRoomResponse {
-  rooms: Room[];       
+  rooms: Room[];
   totalCount: number;
   page: number;
   pageSize: number;

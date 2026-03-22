@@ -1,78 +1,81 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { UserService } from '../../service/auth.service';
-import { User } from '../../models/user.model';
+import { AuthService } from '../../service/auth.service';
+import { UserProfileService } from '../../service/user-profile.service';
+import { AuthResponse } from '../../models';
+import { UserProfile } from '../../models';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css'],
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
 })
 export class ProfileComponent implements OnInit {
-  user: User | null = null;
+  user: AuthResponse | null = null;
+  profile: UserProfile | null = null;
+  editMode = false;
+  loading = false;
+  error = '';
+  success = '';
 
   constructor(
-    private userService: UserService,
-    private router: Router,
+    private authService: AuthService,
+    private userProfileService: UserProfileService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-   
-    this.user = this.userService.currentUserValue;
-
-    
-    console.log('Profile data:', this.user);
-
-  
-    if (!this.user || !this.userService.isLoggedIn()) {
-      console.log('User is not authorized, redirecting to login page');
+    if (!this.authService.isLoggedIn()) {
       this.router.navigate(['/login']);
       return;
     }
 
-    
-    if (this.isMissingDetails()) {
-      console.log('User details are incomplete, attempting to refresh...');
-      this.refreshUserDetails();
-    }
+    this.user = this.authService.currentUser;
+
+    this.loadProfile();
   }
 
-  
-  isMissingDetails(): boolean {
-    if (!this.user) return true;
-
-  
-    return (
-      !this.user.firstName ||
-      !this.user.lastName ||
-      !this.user.email ||
-      !this.user.role
-    );
-  }
-
-    refreshUserDetails(): void {
-    this.userService.fetchUserDetails().subscribe({
-      next: (updatedUser) => {
-        console.log('User details updated:', updatedUser);
-        this.user = updatedUser;
+  loadProfile(): void {
+    this.loading = true;
+    this.userProfileService.getProfile().subscribe({
+      next: (data) => {
+        this.profile = data;
+        this.loading = false;
       },
       error: (err) => {
-        console.error('Error updating user details:', err);
+        this.profile = {};
+        this.loading = false;
       },
     });
   }
 
-  
-  hasValue(field: string): boolean {
-    return !!(this.user && (this.user as any)[field]);
+  saveProfile(): void {
+    if (!this.profile) return;
+
+    this.loading = true;
+    this.error = '';
+    this.success = '';
+
+    this.userProfileService.updateProfile(this.profile).subscribe({
+      next: (data) => {
+        this.profile = data;
+        this.editMode = false;
+        this.success = 'Profile updated successfully.';
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = 'Failed to update profile. Please try again.';
+        this.loading = false;
+      },
+    });
   }
 
-  
   logout(): void {
-    this.userService.logout();
+    this.authService.logout();
     this.router.navigate(['/home']);
   }
 }
