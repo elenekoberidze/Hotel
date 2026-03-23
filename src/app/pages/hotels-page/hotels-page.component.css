@@ -184,9 +184,15 @@ header nav {
     justify-content: space-between;
 }
 
+
+
+/* ტექსტები ახლოს */
+.hotel-name { margin: 0 0 1px; }
+.hotel-city { margin: 0 0 3px; }
+
 .hotel-card {
     background-color: #f9f9f9;
-    border-radius: 8px;
+    border-radius: 4px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     margin: 10px;
     flex: 1 1 calc(33% - 20px); 
@@ -203,7 +209,7 @@ header nav {
 
 .hotel-card img {
     width: 100%;
-    border-radius: 8px;
+    border-radius: 4px;
 }
 
 h3 {
@@ -226,7 +232,7 @@ button {
     background-color: #d4af37;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s,transform 0.2s;
 }
