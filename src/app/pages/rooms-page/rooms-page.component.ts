@@ -20,13 +20,14 @@ export class RoomsPageComponent implements OnInit {
   loading = false;
   error = '';
   isMenuOpen = false;
+  minPrice = 0;
+maxPrice = 1000;
 
   
   checkInDate = '';
   checkOutDate = '';
   selectedRoomType = '';
-  maxPrice: number | null = null;
-  minPrice: number | null = null;
+ 
 
   constructor(
     private roomService: RoomService,
@@ -84,8 +85,8 @@ export class RoomsPageComponent implements OnInit {
     this.checkInDate = '';
     this.checkOutDate = '';
     this.selectedRoomType = '';
-    this.maxPrice = null;
-    this.minPrice = null;
+    this.minPrice = 0;
+    this.maxPrice = 1000;
     this.loadRooms();
   }
 
@@ -104,4 +105,15 @@ export class RoomsPageComponent implements OnInit {
   get username(): string {
     return this.authService.currentUser?.username ?? 'User';
   }
+  
+
+get minPct() { return (this.minPrice / 1000) * 100; }
+get maxPct() { return (this.maxPrice / 1000) * 100; }
+
+onMinChange() {
+  if (this.minPrice >= this.maxPrice) this.minPrice = this.maxPrice - 1;
+}
+onMaxChange() {
+  if (this.maxPrice <= this.minPrice) this.maxPrice = this.minPrice + 1;
+}
 }
