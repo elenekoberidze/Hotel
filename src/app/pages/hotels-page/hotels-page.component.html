@@ -48,21 +48,18 @@
     <div *ngIf="error" class="error-message">{{ error }}</div>
 
     <div class="hotel-cards">
-      <div *ngFor="let hotel of hotels" class="hotel-card">
-        <img [src]="hotel.primaryImage" alt="{{ hotel.name }}" />
-        <h3>{{ hotel.name }}</h3>
-        <p class="city">{{ hotel.city }}</p>
-        <p class="address">{{ hotel.address }}</p>
-        <div class="hotel-meta">
-          <span>{{ hotel.starRating }}</span>
-          <span *ngIf="hotel.averageReviewScore > 0">
-            {{ hotel.averageReviewScore }}/5 reviews
-          </span>
-        </div>
-        <button [routerLink]="['/rooms', hotel.hotelID]">View Rooms</button>
-      </div>
+  <div class="hotel-card" *ngFor="let hotel of hotels">
+    <img [src]="hotel.primaryImage" alt="{{ hotel.name }}" />
+    <div class="hotel-body">
+      <h2 class="hotel-name">{{ hotel.name }}</h2>
+      <p class="hotel-city">{{ hotel.city }} · {{ hotel.address }}</p>
+       <div class="hotel-meta">
+      <span class="stars" *ngFor="let s of [].constructor(hotel.starRating)">★</span>
     </div>
-
+    </div>
+    <button [routerLink]="['/rooms', hotel.hotelID]">View Rooms</button>
+  </div>
+</div>
     <div *ngIf="!loading && hotels.length === 0" class="no-results">
       No hotels found.
     </div>
