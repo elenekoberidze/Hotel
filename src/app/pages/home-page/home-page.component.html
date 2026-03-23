@@ -63,7 +63,7 @@
   <div class="container">
     <h2>Our Amenities</h2>
     <div class="usp-cards">
-      <div class="usp-card" *ngFor="let amenity of amenities">
+      <div class="usp-card" *ngFor="let amenity of amenities | slice: 0:8">
         <h3>{{ amenity.name }}</h3>
        <p>{{ amenity.name }}</p>
       </div>
