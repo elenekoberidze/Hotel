@@ -1,0 +1,135 @@
+<body>
+<header>
+  <div class="logo"><h1>Hotel Booking — Admin</h1></div>
+  <div class="burger-menu" (click)="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+  <nav [class.active]="isMenuOpen">
+    <ul>
+      <li><a routerLink="/home" (click)="closeMenu()">Home</a></li>
+      <li><a routerLink="/admin-reviews" (click)="closeMenu()" class="active-link">Review Moderation</a></li>
+      <li><a routerLink="/profile" class="username">{{ username }}</a></li>
+      <li><a href="#" (click)="logout($event)">Logout</a></li>
+    </ul>
+  </nav>
+</header>
+
+<section class="admin-section">
+  <div class="container">
+
+    <div class="page-header">
+      <h1>Review Moderation</h1>
+      <span class="pending-badge" *ngIf="count('pending') > 0">
+        {{ count('pending') }} Pending
+      </span>
+    </div>
+
+    <div *ngIf="success" class="alert alert-success">{{ success }}</div>
+    <div *ngIf="error"   class="alert alert-error">{{ error }}</div>
+
+
+    <div class="tabs">
+      <button
+        *ngFor="let t of tabs"
+        class="tab"
+        [class.active]="activeTab === t"
+        (click)="setTab(t)"
+      >
+        {{ t | titlecase }}
+        <span class="tab-count">{{ count(t) }}</span>
+      </button>
+    </div>
+
+    <div *ngIf="loading" class="loading">Loading reviews…</div>
+
+    <div *ngIf="!loading && filtered.length === 0" class="empty-state">
+      <div class="empty-icon">✅</div>
+      <p>No {{ activeTab === 'all' ? '' : activeTab }} reviews found.</p>
+    </div>
+
+  
+    <div class="review-list">
+      <div class="review-card" *ngFor="let review of filtered">
+
+       
+        <ng-container *ngIf="editingId !== review.reviewID">
+          <div class="card-header">
+            <div class="card-meta">
+              <h3>{{ review.hotelName }}</h3>
+              <div class="submeta">
+                <span class="author">👤 {{ review.username }}</span>
+                <span class="stars">{{ stars(review.rating) }}</span>
+                <span class="date">{{ review.reviewDate | date:'mediumDate' }}</span>
+              </div>
+            </div>
+            <span class="badge" [ngClass]="statusClass(review.status)">{{ review.status }}</span>
+          </div>
+
+          <p class="comment">{{ review.comment }}</p>
+
+          <div *ngIf="review.adminNote" class="admin-note">
+            <strong>Note:</strong> {{ review.adminNote }}
+          </div>
+
+          <div class="card-actions">
+            <ng-container *ngIf="review.status === 'Pending'">
+              <button class="btn-approve" (click)="quickApprove(review)">✔ Approve</button>
+              <button class="btn-reject"  (click)="quickReject(review)">✘ Reject</button>
+            </ng-container>
+            <button class="btn-edit" (click)="startEdit(review)">✏ Update Status</button>
+            <button class="btn-danger" (click)="deleteReview(review.reviewID)">🗑 Delete</button>
+          </div>
+        </ng-container>
+
+       
+        <ng-container *ngIf="editingId === review.reviewID">
+          <div class="card-header">
+            <div class="card-meta">
+              <h3>{{ review.hotelName }}</h3>
+              <div class="submeta">
+                <span class="author">👤 {{ review.username }}</span>
+                <span class="stars">{{ stars(review.rating) }}</span>
+              </div>
+            </div>
+            <span class="badge" [ngClass]="statusClass(review.status)">{{ review.status }}</span>
+          </div>
+
+          <p class="comment">{{ review.comment }}</p>
+
+          <div class="edit-form">
+            <div class="form-row">
+              <label>New Status</label>
+              <div class="radio-group">
+                <label class="radio-label">
+                  <input type="radio" [(ngModel)]="editStatus" value="Approved" /> Approve
+                </label>
+                <label class="radio-label">
+                  <input type="radio" [(ngModel)]="editStatus" value="Rejected" /> Reject
+                </label>
+              </div>
+            </div>
+            <div class="form-row">
+              <label>Admin Note <small>(optional)</small></label>
+              <textarea [(ngModel)]="editNote" rows="2" placeholder="Leave a note for the customer…"></textarea>
+            </div>
+            <div class="edit-actions">
+              <button class="btn-primary" (click)="submitUpdate(review.reviewID)" [disabled]="updating">
+                {{ updating ? 'Saving…' : 'Save' }}
+              </button>
+              <button class="btn-secondary" (click)="cancelEdit()">Cancel</button>
+            </div>
+          </div>
+        </ng-container>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="container-footer">
+    <p>&copy; 2025 Hotel Booking. All rights reserved.</p>
+  </div>
+</footer>
+</body>

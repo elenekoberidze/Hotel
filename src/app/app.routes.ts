@@ -4,20 +4,35 @@ import { SignUpComponent } from './pages/sign-up/sign-up.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { AuthGuard } from './pages/guards/auth.guard';
 import { LoginComponent } from './pages/login/login.component';
-
+ 
 export const routes: Routes = [
   {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full',
   },
-   
-  { path: 'login', component: LoginComponent }, 
+  { path: 'login', component: LoginComponent },
   { path: 'register', component: SignUpComponent },
   {
     path: 'profile',
-    component:ProfileComponent,
-    canActivate: [AuthGuard], 
+    component: ProfileComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'my-reviews',
+    loadComponent: () =>
+      import('./pages/my-reviews/my-reviews.component').then(
+        (m) => m.MyReviewsComponent
+      ),
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'admin-reviews',
+    loadComponent: () =>
+      import('./pages/admin-reviews/admin-reviews.component').then(
+        (m) => m.AdminReviewsComponent
+      ),
+    canActivate: [AuthGuard],
   },
   {
     path: 'home',
@@ -59,3 +74,5 @@ export const routes: Routes = [
       ),
   },
 ];
+ 
+ 

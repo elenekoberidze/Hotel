@@ -12,6 +12,12 @@
       <li><a routerLink="/hotels" (click)="closeMenu()">Hotels</a></li>
       <li><a routerLink="/rooms" (click)="closeMenu()">Rooms</a></li>
       <li><a routerLink="/booked-rooms" (click)="closeMenu()">Booked Rooms</a></li>
+      <ng-container *ngIf="authService.isLoggedIn() && !authService.isAdmin()">
+        <li><a routerLink="/my-reviews" (click)="closeMenu()">My Reviews</a></li>
+      </ng-container>
+      <ng-container *ngIf="authService.isLoggedIn() && authService.isAdmin()">
+        <li><a routerLink="/admin-reviews" (click)="closeMenu()">Review Moderation</a></li>
+      </ng-container>
       <ng-container *ngIf="!authService.isLoggedIn()">
         <li><a routerLink="/login">Login</a></li>
         <li><a routerLink="/register">Sign Up</a></li>
@@ -23,12 +29,12 @@
     </ul>
   </nav>
 </header>
-
+ 
 <section class="rooms">
   <div class="container">
     <h1>Choose Your Perfect Room</h1>
     <p>Explore all available rooms, filter by your preferences, and book your stay</p>
-
+ 
     <div class="filters">
       <div class="filter-group">
         <label for="room-type">Room Type:</label>
@@ -37,94 +43,89 @@
           <option *ngFor="let type of roomTypes" [value]="type">{{ type }}</option>
         </select>
       </div>
-
+ 
       <div class="filter-group">
-  <label>Price Range: {{ minPrice | currency:'USD':'symbol':'1.0-0' }} – {{ maxPrice | currency:'USD':'symbol':'1.0-0' }}</label>
-
-  <div class="range-slider-wrap">
-    <div class="track-bg"></div>
-    <div class="track-fill" [style.left.%]="minPct" [style.width.%]="maxPct - minPct"></div>
-
-    <input
-      type="range" min="0" max="1000" step="1"
-      [(ngModel)]="minPrice"
-      (input)="onMinChange()"
-      (change)="onFilterChange()"
-    />
-    <input
-      type="range" min="0" max="1000" step="1"
-      [(ngModel)]="maxPrice"
-      (input)="onMaxChange()"
-      (change)="onFilterChange()"
-    />
-  </div>
-</div>
-
+        <label>Price Range: {{ minPrice | currency:'USD':'symbol':'1.0-0' }} – {{ maxPrice | currency:'USD':'symbol':'1.0-0' }}</label>
+        <div class="range-slider-wrap">
+          <div class="track-bg"></div>
+          <div class="track-fill" [style.left.%]="minPct" [style.width.%]="maxPct - minPct"></div>
+          <input type="range" min="0" max="1000" step="1" [(ngModel)]="minPrice" (input)="onMinChange()" (change)="onFilterChange()" />
+          <input type="range" min="0" max="1000" step="1" [(ngModel)]="maxPrice" (input)="onMaxChange()" (change)="onFilterChange()" />
+        </div>
+      </div>
+ 
       <div class="filter-group">
         <label for="check-in">Check-In:</label>
-        <input
-          id="check-in"
-          type="date"
-          [(ngModel)]="checkInDate"
-          (change)="onFilterChange()"
-        />
+        <input id="check-in" type="date" [(ngModel)]="checkInDate" (change)="onFilterChange()" />
       </div>
-
+ 
       <div class="filter-group">
         <label for="check-out">Check-Out:</label>
-        <input
-          id="check-out"
-          type="date"
-          [(ngModel)]="checkOutDate"
-          (change)="onFilterChange()"
-        />
+        <input id="check-out" type="date" [(ngModel)]="checkOutDate" (change)="onFilterChange()" />
       </div>
-
+ 
       <div class="filter-group">
         <button class="reset-filters" (click)="resetFilters()">Reset Filters</button>
       </div>
     </div>
-
+ 
     <div *ngIf="loading" class="loading">Loading rooms...</div>
     <div *ngIf="error" class="error-message">{{ error }}</div>
-
+ 
     <div class="room-cards">
       <div class="room-card" *ngFor="let room of rooms">
-        <img
-          *ngIf="room.images.length > 0"
-          [src]="room.images[0]"
-          alt="Room Image"
-        />
+        <img *ngIf="room.images.length > 0" [src]="room.images[0]" alt="Room Image" />
         <h2>{{ room.roomNumber }}</h2>
         <p class="price">${{ room.price }}/night</p>
         <p class="type">{{ room.roomType }}</p>
         <p class="hotel">{{ room.hotelName }} — {{ room.city }}</p>
         <div class="amenities" *ngIf="room.amenities.length > 0">
-          <span *ngFor="let amenity of room.amenities" class="amenity-tag">
-            {{ amenity }}
-          </span>
+          <span *ngFor="let amenity of room.amenities" class="amenity-tag">{{ amenity }}</span>
         </div>
         <p *ngIf="room.isAvailable" class="available">Available</p>
         <p *ngIf="!room.isAvailable" class="unavailable">Not Available</p>
         <div class="room-buttons">
-          <button
-            [routerLink]="['/booking', room.roomID]"
-            class="book-now-btn"
-            [disabled]="!room.isAvailable"
-          >Book Now</button>
+          <button [routerLink]="['/booking', room.roomID]" class="book-now-btn" [disabled]="!room.isAvailable">Book Now</button>
         </div>
       </div>
     </div>
-
+ 
     <div *ngIf="!loading && rooms.length === 0" class="no-results">
       No rooms found for your selected filters.
     </div>
   </div>
 </section>
-
+ 
+<!-- ── Guest Reviews (only shown when viewing a specific hotel) ── -->
+<section class="reviews-section" *ngIf="hotelId">
+  <div class="container">
+    <h2 class="reviews-title">Guest Reviews</h2>
+ 
+    <div *ngIf="reviewsLoading" class="reviews-loading">Loading reviews…</div>
+ 
+    <div *ngIf="!reviewsLoading && reviews.length === 0" class="no-reviews">
+      No approved reviews yet for this hotel.
+    </div>
+ 
+    <div class="review-cards-grid">
+      <div class="review-card" *ngFor="let review of reviews">
+        <div class="review-card-top">
+          <div>
+            <span class="reviewer-name">{{ review.username }}</span>
+            <div class="stars">{{ stars(review.rating) }}</div>
+          </div>
+          <span class="review-date">{{ review.reviewDate | date:'mediumDate' }}</span>
+        </div>
+        <p class="review-comment">{{ review.comment }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+ 
 <footer>
   <div class="container-footer">
     <p>&copy; 2025 Hotel Booking. All rights reserved.</p>
   </div>
 </footer>
 </body>
+ 

@@ -4,8 +4,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RoomService } from '../../service/rooms.service';
 import { AuthService } from '../../service/auth.service';
-import { Room, RoomType, RoomFilter } from '../../models';
-
+import { ReviewService } from '../../service/review.service';
+import { Room, RoomFilter, Review } from '../../models';
+ 
 @Component({
   selector: 'app-rooms-page',
   standalone: true,
@@ -19,68 +20,70 @@ export class RoomsPageComponent implements OnInit {
   hotelId: number | null = null;
   loading = false;
   error = '';
+ 
+  reviews: Review[] = [];
+  reviewsLoading = false;
+ 
   isMenuOpen = false;
   minPrice = 0;
-maxPrice = 1000;
-
-  
+  maxPrice = 1000;
   checkInDate = '';
   checkOutDate = '';
   selectedRoomType = '';
  
-
   constructor(
     private roomService: RoomService,
     private route: ActivatedRoute,
     private router: Router,
+    private reviewService: ReviewService,
     public authService: AuthService
   ) {}
-
+ 
   ngOnInit(): void {
     const routeHotelId = this.route.snapshot.paramMap.get('hotelId');
     this.hotelId = routeHotelId ? +routeHotelId : null;
-
+ 
     this.loadRooms();
     this.loadRoomTypes();
+    if (this.hotelId) this.loadHotelReviews(this.hotelId);
   }
-
+ 
   loadRooms(): void {
     this.loading = true;
     this.error = '';
-
+ 
     const filter: RoomFilter = {
-      hotelId:   this.hotelId ?? undefined,
-      checkIn:   this.checkInDate   || undefined,
-      checkOut:  this.checkOutDate  || undefined,
-      roomType:  this.selectedRoomType || undefined,
-      maxPrice:  this.maxPrice  ?? undefined,
-      minPrice:  this.minPrice  ?? undefined,
+      hotelId:  this.hotelId ?? undefined,
+      checkIn:  this.checkInDate  || undefined,
+      checkOut: this.checkOutDate || undefined,
+      roomType: this.selectedRoomType || undefined,
+      maxPrice: this.maxPrice ?? undefined,
+      minPrice: this.minPrice ?? undefined,
     };
-
+ 
     this.roomService.getRooms(filter).subscribe({
-      next: (response) => {
-        this.rooms = response.rooms;
-        this.loading = false;
-      },
-      error: (err) => {
-        this.error = 'Failed to load rooms.';
-        this.loading = false;
-        console.error(err);
-      },
+      next: (response) => { this.rooms = response.rooms; this.loading = false; },
+      error: (err) => { this.error = 'Failed to load rooms.'; this.loading = false; console.error(err); },
     });
   }
-
+ 
   loadRoomTypes(): void {
     this.roomService.getRoomTypes().subscribe({
       next: (data) => (this.roomTypes = data),
       error: (err) => console.error('Error fetching room types:', err),
     });
   }
-
-  onFilterChange(): void {
-    this.loadRooms();
+ 
+  loadHotelReviews(hotelId: number): void {
+    this.reviewsLoading = true;
+    this.reviewService.getHotelReviews(hotelId).subscribe({
+      next: (data) => { this.reviews = data; this.reviewsLoading = false; },
+      error: () => { this.reviewsLoading = false; },
+    });
   }
-
+ 
+  onFilterChange(): void { this.loadRooms(); }
+ 
   resetFilters(): void {
     this.checkInDate = '';
     this.checkOutDate = '';
@@ -89,31 +92,27 @@ maxPrice = 1000;
     this.maxPrice = 1000;
     this.loadRooms();
   }
-
-  bookRoom(roomID: number): void {
-    this.router.navigate(['/booking', roomID]);
+ 
+  stars(rating: number): string {
+    return '★'.repeat(rating) + '☆'.repeat(5 - rating);
   }
-
+ 
+  bookRoom(roomID: number): void { this.router.navigate(['/booking', roomID]); }
+ 
   toggleMenu(): void { this.isMenuOpen = !this.isMenuOpen; }
   closeMenu(): void  { this.isMenuOpen = false; }
-
+ 
   logout(event?: Event): void {
     event?.preventDefault();
     this.authService.logout();
   }
-
-  get username(): string {
-    return this.authService.currentUser?.username ?? 'User';
-  }
-  
-
-get minPct() { return (this.minPrice / 1000) * 100; }
-get maxPct() { return (this.maxPrice / 1000) * 100; }
-
-onMinChange() {
-  if (this.minPrice >= this.maxPrice) this.minPrice = this.maxPrice - 1;
+ 
+  get username(): string { return this.authService.currentUser?.username ?? 'User'; }
+  get minPct() { return (this.minPrice / 1000) * 100; }
+  get maxPct() { return (this.maxPrice / 1000) * 100; }
+ 
+  onMinChange() { if (this.minPrice >= this.maxPrice) this.minPrice = this.maxPrice - 1; }
+  onMaxChange() { if (this.maxPrice <= this.minPrice) this.maxPrice = this.minPrice + 1; }
 }
-onMaxChange() {
-  if (this.maxPrice <= this.minPrice) this.maxPrice = this.minPrice + 1;
-}
-}
+ 
+ 

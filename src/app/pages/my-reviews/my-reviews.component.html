@@ -1,0 +1,126 @@
+<body>
+<header>
+  <div class="logo"><h1>Hotel Booking</h1></div>
+  <div class="burger-menu" (click)="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+  <nav [class.active]="isMenuOpen">
+    <ul>
+      <li><a routerLink="/home" (click)="closeMenu()">Home</a></li>
+      <li><a routerLink="/hotels" (click)="closeMenu()">Hotels</a></li>
+      <li><a routerLink="/rooms" (click)="closeMenu()">Rooms</a></li>
+      <li><a routerLink="/booked-rooms" (click)="closeMenu()">Booked Rooms</a></li>
+      <li><a routerLink="/my-reviews" (click)="closeMenu()">My Reviews</a></li>
+      <ng-container *ngIf="!authService.isLoggedIn()">
+        <li><a routerLink="/login">Login</a></li>
+        <li><a routerLink="/register">Sign Up</a></li>
+      </ng-container>
+      <ng-container *ngIf="authService.isLoggedIn()">
+        <li><a routerLink="/profile" class="username">{{ username }}</a></li>
+        <li><a href="#" (click)="logout($event)">Logout</a></li>
+      </ng-container>
+    </ul>
+  </nav>
+</header>
+ 
+<section class="reviews-section">
+  <div class="container">
+ 
+    <div class="page-header">
+      <h1>My Reviews</h1>
+      <button class="btn-primary" (click)="showForm = !showForm">
+        {{ showForm ? '✕ Cancel' : '+ Write a Review' }}
+      </button>
+    </div>
+ 
+    <div *ngIf="success" class="alert alert-success">{{ success }}</div>
+    <div *ngIf="error" class="alert alert-error">{{ error }}</div>
+ 
+    
+    <div *ngIf="showForm" class="form-card">
+      <h2>Write a Review</h2>
+ 
+      <div class="form-group">
+        <label>Hotel</label>
+        <select [(ngModel)]="newReview.hotelID">
+          <option [ngValue]="0" disabled>Select a hotel…</option>
+          <option *ngFor="let h of hotels" [ngValue]="h.hotelID">{{ h.name }} — {{ h.city }}</option>
+        </select>
+      </div>
+ 
+      <div class="form-group">
+        <label>Rating</label>
+        <div class="star-picker">
+          <span
+            *ngFor="let s of [1,2,3,4,5]"
+            class="star"
+            [class.filled]="s <= newReview.rating"
+            (click)="setRating(s)"
+          >★</span>
+        </div>
+      </div>
+ 
+      <div class="form-group">
+        <label>Comment</label>
+        <textarea
+          [(ngModel)]="newReview.comment"
+          rows="4"
+          placeholder="Share your experience…"
+        ></textarea>
+      </div>
+ 
+      <button class="btn-primary" (click)="submitReview()" [disabled]="submitting">
+        {{ submitting ? 'Submitting…' : 'Submit Review' }}
+      </button>
+      <p class="hint">⏳ Your review will be visible to others only after admin approval.</p>
+    </div>
+ 
+   
+    <div *ngIf="loading" class="loading">Loading your reviews…</div>
+ 
+   
+    <div *ngIf="!loading && reviews.length === 0 && !showForm" class="empty-state">
+      <div class="empty-icon">✍️</div>
+      <p>You haven't written any reviews yet.</p>
+      <button class="btn-primary" (click)="showForm = true">Write Your First Review</button>
+    </div>
+ 
+    
+    <div class="review-list">
+      <div class="review-card" *ngFor="let review of reviews">
+        <div class="review-card-header">
+          <div>
+            <h3>{{ review.hotelName }}</h3>
+            <div class="stars">{{ stars(review.rating) }}</div>
+          </div>
+          <span class="badge" [ngClass]="statusClass(review.status)">{{ review.status }}</span>
+        </div>
+ 
+        <p class="comment">{{ review.comment }}</p>
+ 
+        <div *ngIf="review.adminNote" class="admin-note">
+          <strong>Admin note:</strong> {{ review.adminNote }}
+        </div>
+ 
+        <div class="review-card-footer">
+          <span class="date">{{ review.reviewDate | date:'mediumDate' }}</span>
+          <button
+            class="btn-danger"
+            (click)="deleteReview(review.reviewID)"
+            [disabled]="review.status === 'Approved'"
+            [title]="review.status === 'Approved' ? 'Approved reviews cannot be deleted' : 'Delete review'"
+          >Delete</button>
+        </div>
+      </div>
+    </div>
+ 
+  </div>
+</section>
+ 
+<footer>
+  <div class="container-footer">
+    <p>&copy; 2025 Hotel Booking. All rights reserved.</p>
+  </div>
+</footer>
+</body>
+ 

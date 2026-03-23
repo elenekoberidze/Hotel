@@ -14,6 +14,12 @@
       <li><a routerLink="/hotels" (click)="closeMenu()">Hotels</a></li>
       <li><a routerLink="/rooms" (click)="closeMenu()">Rooms</a></li>
       <li><a routerLink="/booked-rooms" (click)="closeMenu()">Booked Rooms</a></li>
+      <ng-container *ngIf="authService.isLoggedIn() && !authService.isAdmin()">
+        <li><a routerLink="/my-reviews" (click)="closeMenu()">My Reviews</a></li>
+      </ng-container>
+      <ng-container *ngIf="authService.isLoggedIn() && authService.isAdmin()">
+        <li><a routerLink="/admin-reviews" (click)="closeMenu()">Review Moderation</a></li>
+      </ng-container>
       <ng-container *ngIf="!authService.isLoggedIn()">
         <li><a routerLink="/login">Login</a></li>
         <li><a routerLink="/register">Sign Up</a></li>
