@@ -7,7 +7,7 @@ import { Review, CreateReviewRequest, UpdateReviewStatusRequest } from '../model
   providedIn: 'root',
 })
 export class ReviewService {
-  private apiUrl = '/api/Review';
+  private apiUrl = 'https://localhost:7296/api/Review';
 
   constructor(private http: HttpClient) {}
 

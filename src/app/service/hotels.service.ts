@@ -7,7 +7,7 @@ import { Hotel, PagedHotelResponse } from '../models';
   providedIn: 'root',
 })
 export class HotelService {
-  private apiUrl = '/api/Hotel';
+  private apiUrl = 'https://localhost:7296/api/Hotel';
 
   constructor(private http: HttpClient) {}
 

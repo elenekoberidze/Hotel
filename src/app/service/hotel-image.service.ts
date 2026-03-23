@@ -7,7 +7,7 @@ import { HotelImage } from '../models';
   providedIn: 'root',
 })
 export class HotelImageService {
-  private apiUrl = '/api/HotelImage';
+  private apiUrl = 'https://localhost:7296/api/HotelImage';
 
   constructor(private http: HttpClient) {}
 

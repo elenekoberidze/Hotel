@@ -7,7 +7,7 @@ import { Room, PagedRoomResponse, RoomFilter, RoomType } from '../models';
   providedIn: 'root',
 })
 export class RoomService {
-  private apiUrl = '/api/Room';
+  private apiUrl = 'https://localhost:7296/api/Room';
 
   constructor(private http: HttpClient) {}
 

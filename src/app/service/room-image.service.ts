@@ -7,7 +7,7 @@ import { RoomImage } from '../models';
   providedIn: 'root',
 })
 export class RoomImageService {
-  private apiUrl = '/api/RoomImage';
+  private apiUrl = 'https://localhost:7296/api/RoomImage';
 
   constructor(private http: HttpClient) {}
 
