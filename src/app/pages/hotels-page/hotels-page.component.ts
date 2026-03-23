@@ -4,12 +4,14 @@ import { CommonModule } from '@angular/common';
 import { HotelService } from '../../service/hotels.service';
 import { AuthService } from '../../service/auth.service';
 import { Hotel } from '../../models';
+import { FormsModule } from '@angular/forms';
+
 
 @Component({
   selector: 'app-hotel',
   templateUrl: './hotels-page.component.html',
   styleUrls: ['./hotels-page.component.css'],
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, CommonModule, FormsModule],
   standalone: true,
 })
 export class HotelsPageComponent implements OnInit {
