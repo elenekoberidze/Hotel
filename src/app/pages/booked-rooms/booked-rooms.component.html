@@ -1,8 +1,6 @@
 <body>
 <header>
-  <div class="logo">
-    <h1>Hotel Booking</h1>
-  </div>
+  <div class="logo"><h1>Hotel Booking</h1></div>
   <div class="burger-menu" (click)="toggleMenu()">
     <span></span><span></span><span></span>
   </div>
@@ -17,6 +15,7 @@
       </ng-container>
       <ng-container *ngIf="authService.isLoggedIn() && authService.isAdmin()">
         <li><a routerLink="/admin-reviews" (click)="closeMenu()">Review Moderation</a></li>
+        <li><a routerLink="/admin-amenities" (click)="closeMenu()">Amenities</a></li>
       </ng-container>
       <ng-container *ngIf="!authService.isLoggedIn()">
         <li><a routerLink="/login">Login</a></li>
@@ -32,75 +31,135 @@
 
 <section class="booked-rooms">
   <div class="container">
-    <h1>My Bookings</h1>
-    <p>View and manage all your reservations</p>
+
+    <div class="page-header">
+      <div>
+        <h1>{{ isAdmin ? 'All Bookings' : 'My Bookings' }}</h1>
+        <p>{{ isAdmin ? 'Manage all reservations across the platform' : 'View and manage all your reservations' }}</p>
+      </div>
+      <span class="admin-badge" *ngIf="isAdmin">🛡 Admin View</span>
+    </div>
+
+ 
+    <div class="notification-area">
+      <div class="success-notification" *ngIf="cancelSuccess">Booking cancelled successfully!</div>
+      <div class="error-notification"   *ngIf="cancelError">{{ cancelError }}</div>
+      <div class="success-notification" *ngIf="adminSuccess">{{ adminSuccess }}</div>
+      <div class="error-notification"   *ngIf="adminError">{{ adminError }}</div>
+    </div>
+
+   
+    <div class="filter-bar" *ngIf="isAdmin">
+      <label>Filter by status:</label>
+      <select [(ngModel)]="statusFilter" (change)="onStatusFilterChange()">
+        <option value="all">All Statuses</option>
+        <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+      </select>
+      <span class="total-count" *ngIf="statusFilter === 'all'">
+        {{ totalCount }} total booking{{ totalCount !== 1 ? 's' : '' }}
+      </span>
+    </div>
+
 
     <div *ngIf="loading" class="loading">
       <div class="spinner"></div>
-      <p>Loading bookings...</p>
+      <p>Loading bookings…</p>
     </div>
 
+   
     <div *ngIf="error && !loading" class="error-message">
       <p>{{ error }}</p>
       <a routerLink="/rooms" class="book-now-button">Book a room now</a>
     </div>
 
-    <div class="notification-area">
-      <div class="success-notification" *ngIf="cancelSuccess">
-        Booking cancelled successfully!
-      </div>
-      <div class="error-notification" *ngIf="cancelError">
-        {{ cancelError }}
-      </div>
-    </div>
-
+   
     <div *ngIf="!loading && bookings.length === 0 && !error" class="no-bookings">
-      <p>You have no bookings yet.</p>
-      <a routerLink="/rooms" class="book-now-button">Book a room now</a>
+      <p>{{ isAdmin ? 'No bookings found.' : 'You have no bookings yet.' }}</p>
+      <a *ngIf="!isAdmin" routerLink="/rooms" class="book-now-button">Book a room now</a>
     </div>
 
+    
     <table class="booked-rooms-table" *ngIf="bookings.length > 0 && !loading">
       <thead>
         <tr>
-          <th>Booking ID</th>
+          <th>ID</th>
+          <th *ngIf="isAdmin">Guest</th>
           <th>Room</th>
           <th>Hotel</th>
           <th>Check-in</th>
           <th>Check-out</th>
           <th>Nights</th>
-          <th>Total Price</th>
+          <th>Total</th>
           <th>Status</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let booking of bookings" [class]="booking.status.toLowerCase()">
-          <td>{{ booking.bookingID }}</td>
-          <td>{{ booking.roomNumber }}</td>
-          <td>{{ booking.hotelName }}, {{ booking.hotelCity }}</td>
-          <td>{{ booking.checkInDate | date }}</td>
-          <td>{{ booking.checkOutDate | date }}</td>
-          <td>{{ booking.nights }}</td>
-          <td>${{ booking.totalPrice }}</td>
-          <td>
-            <span class="status-badge" [class]="booking.status.toLowerCase()">
-              {{ booking.status }}
-            </span>
-          </td>
-          <td>
-            <button
-              class="cancel-booking"
-              *ngIf="canCancel(booking)"
-              [disabled]="cancellingId === booking.bookingID"
-              (click)="cancelBooking(booking.bookingID)"
-            >
-              {{ cancellingId === booking.bookingID ? "Cancelling..." : "Cancel" }}
-            </button>
-            <span *ngIf="!canCancel(booking)" class="cannot-cancel">—</span>
-          </td>
-        </tr>
+        <ng-container *ngFor="let booking of bookings">
+
+        
+          <tr *ngIf="editingId !== booking.bookingID" [class]="booking.status.toLowerCase()">
+            <td data-label="ID">{{ booking.bookingID }}</td>
+            <td data-label="Guest" *ngIf="isAdmin">{{ booking.username }}</td>
+            <td data-label="Room">{{ booking.roomNumber }}</td>
+            <td data-label="Hotel">{{ booking.hotelName }}, {{ booking.hotelCity }}</td>
+            <td data-label="Check-in">{{ booking.checkInDate | date }}</td>
+            <td data-label="Check-out">{{ booking.checkOutDate | date }}</td>
+            <td data-label="Nights">{{ booking.nights }}</td>
+            <td data-label="Total">${{ booking.totalPrice }}</td>
+            <td data-label="Status">
+              <span class="status-badge" [ngClass]="statusClass(booking.status)">{{ booking.status }}</span>
+            </td>
+            <td data-label="Actions">
+             
+              <ng-container *ngIf="isAdmin">
+                <button class="btn-edit" (click)="startEdit(booking)">✏ Update</button>
+                <button class="btn-danger" (click)="deleteBooking(booking.bookingID)">🗑 Delete</button>
+              </ng-container>
+       
+              <ng-container *ngIf="!isAdmin">
+                <button
+                  class="cancel-booking"
+                  *ngIf="canCancel(booking)"
+                  [disabled]="cancellingId === booking.bookingID"
+                  (click)="cancelBooking(booking.bookingID)"
+                >
+                  {{ cancellingId === booking.bookingID ? 'Cancelling…' : 'Cancel' }}
+                </button>
+                <span *ngIf="!canCancel(booking)" class="cannot-cancel">—</span>
+              </ng-container>
+            </td>
+          </tr>
+
+        
+          <tr *ngIf="isAdmin && editingId === booking.bookingID" class="edit-row">
+            <td [attr.colspan]="isAdmin ? 10 : 9">
+              <div class="inline-edit-form">
+                <span class="edit-label">Update status for Booking #{{ booking.bookingID }} — {{ booking.username }}</span>
+                <div class="edit-controls">
+                  <select [(ngModel)]="editStatus">
+                    <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+                  </select>
+                  <button class="btn-primary" (click)="submitStatusUpdate(booking.bookingID)" [disabled]="updatingId === booking.bookingID">
+                    {{ updatingId === booking.bookingID ? 'Saving…' : 'Save' }}
+                  </button>
+                  <button class="btn-secondary" (click)="cancelEdit()">Cancel</button>
+                </div>
+              </div>
+            </td>
+          </tr>
+
+        </ng-container>
       </tbody>
     </table>
+
+  
+    <div class="pagination" *ngIf="isAdmin && statusFilter === 'all' && totalPages > 1">
+      <button (click)="goToPage(page - 1)" [disabled]="page === 1">‹ Prev</button>
+      <span>Page {{ page }} of {{ totalPages }}</span>
+      <button (click)="goToPage(page + 1)" [disabled]="page === totalPages">Next ›</button>
+    </div>
+
   </div>
 </section>
 

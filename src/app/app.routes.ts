@@ -4,14 +4,14 @@ import { SignUpComponent } from './pages/sign-up/sign-up.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { AuthGuard } from './pages/guards/auth.guard';
 import { LoginComponent } from './pages/login/login.component';
- 
+
 export const routes: Routes = [
   {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full',
   },
-  { path: 'login', component: LoginComponent },
+  { path: 'login',    component: LoginComponent },
   { path: 'register', component: SignUpComponent },
   {
     path: 'profile',
@@ -31,6 +31,15 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/admin-reviews/admin-reviews.component').then(
         (m) => m.AdminReviewsComponent
+      ),
+    canActivate: [AuthGuard],
+  },
+
+  {
+    path: 'admin-amenities',
+    loadComponent: () =>
+      import('./pages/admin-amenities/admin-amenities.component').then(
+        (m) => m.AdminAmenitiesComponent
       ),
     canActivate: [AuthGuard],
   },
@@ -65,6 +74,7 @@ export const routes: Routes = [
       import('./pages/booked-rooms/booked-rooms.component').then(
         (m) => m.BookedRoomsComponent
       ),
+    canActivate: [AuthGuard],
   },
   {
     path: 'booking/:id',
@@ -74,5 +84,3 @@ export const routes: Routes = [
       ),
   },
 ];
- 
- 

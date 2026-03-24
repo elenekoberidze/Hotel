@@ -1,3 +1,4 @@
+
 <div class="profile-container">
   <h2>Profile</h2>
   <div *ngIf="loading" class="loading">Loading...</div>
@@ -26,9 +27,9 @@
     <div class="form-group"><label>Bio</label><textarea [(ngModel)]="profile!.bio" placeholder="Tell us about yourself" rows="3"></textarea></div>
     <div class="buttons">
       <button (click)="saveProfile()" [disabled]="loading">{{ loading ? "Saving..." : "Save" }}</button>
-      <button (click)="editMode = false">Cancel</button>
+      <button class="cancel-btn" (click)="editMode = false">Cancel</button>
     </div>
   </div>
   <div *ngIf="!user" class="error-message">User data not found. Please log in.</div>
-  <div class="buttons"><button (click)="logout()">Logout</button></div>
+  <div class="buttons logout-container"><button (click)="logout()">Logout</button></div>
 </div>
