@@ -43,7 +43,6 @@
     <div *ngIf="loading" class="loading">Loading reviews…</div>
 
     <div *ngIf="!loading && filtered.length === 0" class="empty-state">
-      <div class="empty-icon">✅</div>
       <p>No {{ activeTab === 'all' ? '' : activeTab }} reviews found.</p>
     </div>
 
@@ -57,7 +56,7 @@
             <div class="card-meta">
               <h3>{{ review.hotelName }}</h3>
               <div class="submeta">
-                <span class="author">👤 {{ review.username }}</span>
+                <span class="author">-{{ review.username }}</span>
                 <span class="stars">{{ stars(review.rating) }}</span>
                 <span class="date">{{ review.reviewDate | date:'mediumDate' }}</span>
               </div>
@@ -87,7 +86,7 @@
             <div class="card-meta">
               <h3>{{ review.hotelName }}</h3>
               <div class="submeta">
-                <span class="author">👤 {{ review.username }}</span>
+                <span class="author">-{{ review.username }}</span>
                 <span class="stars">{{ stars(review.rating) }}</span>
               </div>
             </div>
