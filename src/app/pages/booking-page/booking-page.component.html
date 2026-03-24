@@ -11,6 +11,7 @@
       <li><a routerLink="/home" (click)="closeMenu()">Home</a></li>
       <li><a routerLink="/hotels" (click)="closeMenu()">Hotels</a></li>
       <li><a routerLink="/rooms" (click)="closeMenu()">Rooms</a></li>
+      <li><a routerLink="/admin-amenities" (click)="closeMenu()">Amenities</a></li>
       <li><a routerLink="/booked-rooms" (click)="closeMenu()">Booked Rooms</a></li>
       <ng-container *ngIf="!authService.isLoggedIn()">
         <li><a routerLink="/login">Login</a></li>

@@ -22,7 +22,7 @@
   
     <div class="page-header">
       <h1>Amenity Management</h1>
-      <button class="btn-primary" (click)="showCreateForm = !showCreateForm">
+      <button *ngIf="authService.isAdmin()" class="btn-primary" (click)="showCreateForm = !showCreateForm">
         {{ showCreateForm ? '✕ Cancel' : '+ Add Amenity' }}
       </button>
     </div>
@@ -77,7 +77,7 @@
           <div *ngIf="amenity.rooms.length > 0" class="room-list">
             <span *ngFor="let r of amenity.rooms" class="room-tag">{{ r }}</span>
           </div>
-          <div class="amenity-actions">
+          <div class="amenity-actions" *ngIf="authService.isAdmin()">
             <button class="btn-edit" (click)="startEdit(amenity)">✏ Edit</button>
             <button class="btn-danger" (click)="deleteAmenity(amenity)">🗑 Delete</button>
           </div>

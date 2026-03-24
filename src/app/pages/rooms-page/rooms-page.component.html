@@ -11,6 +11,7 @@
       <li><a routerLink="/home" (click)="closeMenu()">Home</a></li>
       <li><a routerLink="/hotels" (click)="closeMenu()">Hotels</a></li>
       <li><a routerLink="/rooms" (click)="closeMenu()">Rooms</a></li>
+      <li><a routerLink="/admin-amenities" (click)="closeMenu()">Amenities</a></li>
       <li><a routerLink="/booked-rooms" (click)="closeMenu()">Booked Rooms</a></li>
       <ng-container *ngIf="authService.isLoggedIn() && !authService.isAdmin()">
         <li><a routerLink="/my-reviews" (click)="closeMenu()">My Reviews</a></li>
@@ -96,7 +97,7 @@
   </div>
 </section>
  
-<!-- ── Guest Reviews (only shown when viewing a specific hotel) ── -->
+
 <section class="reviews-section" *ngIf="hotelId">
   <div class="container">
     <h2 class="reviews-title">Guest Reviews</h2>
