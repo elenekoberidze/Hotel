@@ -6,13 +6,14 @@ import { AuthService } from '../../service/auth.service';
 import { UserProfileService } from '../../service/user-profile.service';
 import { AuthResponse } from '../../models';
 import { UserProfile } from '../../models';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
 })
 export class ProfileComponent implements OnInit {
   user: AuthResponse | null = null;

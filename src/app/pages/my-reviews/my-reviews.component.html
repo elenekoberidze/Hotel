@@ -72,7 +72,7 @@
       <button class="btn-primary" (click)="submitReview()" [disabled]="submitting">
         {{ submitting ? 'Submitting…' : 'Submit Review' }}
       </button>
-      <p class="hint">⏳ Your review will be visible to others only after admin approval.</p>
+      <p class="hint"> Your review will be visible to others only after admin approval.</p>
     </div>
  
    
@@ -80,7 +80,6 @@
  
    
     <div *ngIf="!loading && reviews.length === 0 && !showForm" class="empty-state">
-      <div class="empty-icon">✍️</div>
       <p>You haven't written any reviews yet.</p>
       <button class="btn-primary" (click)="showForm = true">Write Your First Review</button>
     </div>

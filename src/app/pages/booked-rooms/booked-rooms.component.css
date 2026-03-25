@@ -56,10 +56,11 @@ header nav { display: flex; }
 footer {
   background-color: #2c3e50; color: #fff;
   text-align: center; padding: 20px 0; margin-top: 60px;
+   animation: slideIn 2s ease-in-out;
 }
 footer p { margin: 0; }
 
-.booked-rooms { padding: 30px 20px; }
+.booked-rooms { padding: 30px 20px;  animation: slideIn 2s ease-in-out;}
 .container { width: 90%; max-width: 1200px; margin: 0 auto; }
 
 .page-header {
