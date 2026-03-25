@@ -85,7 +85,7 @@
   <div class="container">
     <h2>What Our Guests Say</h2>
     <div class="usp-cards">
-      <div class="usp-card" *ngFor="let review of reviews">
+      <div class="usp-card" *ngFor="let review of reviews | slice: 0:4">
         <h3>{{ getStars(review.rating) }}</h3>
         <p>{{ review.comment }}</p>
         <p><strong>— {{ review.username }}</strong></p>

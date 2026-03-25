@@ -41,17 +41,26 @@ export class HomePageComponent implements OnInit {
       error: (err) => console.error('Error fetching rooms:', err),
     });
 
-    this.hotelService.getHotels().subscribe({
-      next: (response) => {
-        this.hotels = response.hotels;
-        if (this.hotels.length > 0) {
-          this.currentHotel = this.hotels[0];
-          this.startBackgroundRotation();
-          this.loadReviews(this.hotels[0].hotelID);
-        }
-      },
-      error: (err) => console.error('Error fetching hotels:', err),
-    });
+   this.hotelService.getHotels().subscribe({
+  next: (response) => {
+    this.hotels = response.hotels;
+    if (this.hotels.length > 0) {
+      this.currentHotel = this.hotels[0];
+      this.startBackgroundRotation();
+
+      
+      this.hotels.forEach(hotel => {
+        this.reviewService.getHotelReviews(hotel.hotelID).subscribe({
+          next: (data) => {
+            this.reviews = [...this.reviews, ...data].slice(0, 6);
+          },
+          error: (err) => console.error('Error fetching reviews:', err),
+        });
+      });
+    }
+  },
+  error: (err) => console.error('Error fetching hotels:', err),
+});
 
     this.amenityService.getAmenities().subscribe({
       next: (data) => (this.amenities = data),
@@ -60,11 +69,11 @@ export class HomePageComponent implements OnInit {
   }
 
   loadReviews(hotelId: number): void {
-    this.reviewService.getHotelReviews(hotelId).subscribe({
-      next: (data) => (this.reviews = data.slice(0, 6)),
-      error: (err) => console.error('Error fetching reviews:', err),
-    });
-  }
+  this.reviewService.getHotelReviews(hotelId).subscribe({
+    next: (data) => (this.reviews = data.slice(0, 6)), 
+    error: (err) => console.error('Error fetching reviews:', err),
+  });
+}
 
   startBackgroundRotation(): void {
     this.ngZone.runOutsideAngular(() => {
