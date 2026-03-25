@@ -22,8 +22,10 @@ export class HotelService {
   }
 
   getHotelsByCity(city: string): Observable<Hotel[]> {
-    return this.http.get<Hotel[]>(`${this.apiUrl}/GetHotelsBy${city}`);
-  }
+  return this.http.get<Hotel[]>(`${this.apiUrl}/GetHotelsByCity`, {
+    params: { city }
+  });
+}
 
   getCities(): Observable<string[]> {
     return this.http.get<string[]>(`${this.apiUrl}/GetCities`);
